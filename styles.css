@@ -1,4 +1,13 @@
-/* Sets all the text color to red! */
 body {
-    color: red;
+  color: white;
+}
+
+.pane-empty {
+  /* color: rgb(175, 0, 0);
+    font-weight: 600;
+    background: rgb(165, 165, 165); */
+  border-radius: 13px;
+  /* border: 1px solid rgb(175, 0, 0); */
+  padding: 15px;
+  width: 100%;
 }

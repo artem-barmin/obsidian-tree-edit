@@ -12,7 +12,8 @@ if you want to view the source visit the plugins github repository
 `;
 
 export default {
-  input: 'main.ts',
+  input: './src/main.ts',
+  treeshake: true,
   output: {
     dir: '.',
     sourcemap: 'inline',

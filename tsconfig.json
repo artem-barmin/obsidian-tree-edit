@@ -1,22 +1,21 @@
 {
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "resolveJsonModule": true,
     "baseUrl": ".",
+    "target": "esnext",
     "inlineSourceMap": true,
     "inlineSources": true,
-    "module": "ESNext",
-    "target": "es6",
-    "allowJs": true,
-    "noImplicitAny": true,
-    "moduleResolution": "node",
+    "skipLibCheck": true,
     "importHelpers": true,
-    "lib": [
-      "dom",
-      "es5",
-      "scripthost",
-      "es2015"
-    ]
+    "lib": ["DOM", "DOM.Iterable", "esnext", "es6", "scripthost", "es2018" ],
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true
   },
-  "include": [
-    "**/*.ts"
-  ]
+  "include": [ "src/*.ts" ]
 }
