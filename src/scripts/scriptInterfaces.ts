@@ -1,11 +1,15 @@
+import { VNode } from 'preact';
+
+export type VirtualDom = (VNode | string)[];
+
 export type id = string;
 
-export type idChains = string[];
+export type idChains = id[];
 
 export interface IPreactState extends IStateInfo {
   children: IDataChains[];
   scrollChildren: IDataChains[];
-  parents: idChains;
+  parents: IDataChains[];
   neighbors: idChains;
   isParent: boolean;
   isChild: boolean;
@@ -21,14 +25,14 @@ export interface IHeaderChains {
   id: id;
   depth: number;
   children: IHeaderChains[];
-  parents: idChains;
+  parents: IDataChains[];
   neighbors: idChains;
 }
 
-export interface IStateInfo {
+export interface IStateInfo extends IDataChains {
   id: id;
-  headerHTML: string;
-  contentsHTML: string[];
+  headerHTML: VirtualDom;
+  contentsHTML: VirtualDom[];
 }
 
 export interface IDataChains {

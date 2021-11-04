@@ -5,9 +5,13 @@ import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
 import { Root } from 'remark-parse/lib';
 import { nanoid } from 'nanoid';
+import { PreactHTMLConverter } from 'preact-html-converter';
+import _ from 'lodash';
 
 import { markdownText } from '../constMd';
-import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains } from './scriptInterfaces';
+import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains, VirtualDom } from './scriptInterfaces';
+
+const converter = PreactHTMLConverter();
 
 const astToHTML = async (ast: any): Promise<string> => {
   const resultMD: string = remark().stringify(ast);
@@ -18,9 +22,9 @@ const astToHTML = async (ast: any): Promise<string> => {
 const initialState = async (markdown: Root) => {
   const headersData: IHeadersData[] = [];
   const preactState: IPreactState[][] = [];
-  let childrenNode: any[] = [];
+  const childrenNode: any = [];
 
-  visit(markdown, 'root', (node: any): void => {
+  visit(markdown, 'root', (node): void => {
     childrenNode.push(...node.children);
   });
 
@@ -28,12 +32,11 @@ const initialState = async (markdown: Root) => {
     if (elem.type === 'thematicBreak') continue;
 
     const orderLength: number = headersData.length;
-    const contentHTML: string = await astToHTML(elem);
+    const contentHTML: VirtualDom = converter.convert(await astToHTML(elem));
 
     if (elem.type === 'heading') {
       const objTitle: IHeadersData = {
-        // id: nanoid(),
-        id: elem.children[0].value,
+        id: nanoid(),
         depth: elem.depth,
         headerHTML: contentHTML,
         contentsHTML: []
@@ -49,6 +52,7 @@ const initialState = async (markdown: Root) => {
   headersData.forEach(({ id, depth, headerHTML, contentsHTML }) => {
     const objState: IPreactState = {
       id,
+      depth,
       headerHTML,
       contentsHTML,
       children: [],
@@ -69,7 +73,7 @@ const initialState = async (markdown: Root) => {
 };
 
 const buildTree = (inputArr: IHeadersData[]) => {
-  const buildNode = (input: IHeadersData, parentArr: idChains): IHeaderChains => ({
+  const buildNode = (input: IHeadersData, parentArr: IDataChains[]): IHeaderChains => ({
     id: input.id,
     depth: input.depth,
     children: [],
@@ -77,9 +81,9 @@ const buildTree = (inputArr: IHeadersData[]) => {
     neighbors: []
   });
 
-  const buildLevel = (globalInput: IHeadersData[], parentArr?: idChains) => {
+  const buildLevel = (globalInput: IHeadersData[], parentArr?: IDataChains[]) => {
     const currentLevel: IHeaderChains[] = [];
-    let levelDepth: number;
+    let levelDepth: number = 0;
 
     const parents = parentArr && parentArr.length ? [...parentArr] : [];
 
@@ -97,21 +101,17 @@ const buildTree = (inputArr: IHeadersData[]) => {
       }
       if (currentElement.depth > levelDepth) {
         const previousElement = currentLevel[currentLevel.length - 1];
-        previousElement.children = buildLevel(globalInput, [...parents, globalInput[globalIndex - 1].id]);
+        const { id, depth } = globalInput[globalIndex - 1];
+        previousElement.children = buildLevel(globalInput, [...parents, { id, depth }]);
       } else {
         currentLevel.push(buildNode(currentElement, parents));
         globalIndex++;
       }
     }
 
-    if (currentLevel.length > 1) {
-      for (const { id, neighbors } of currentLevel) {
-        for (const { id: addedId } of currentLevel) {
-          if (id === addedId) continue;
-          neighbors.push(addedId);
-        }
-      }
-    }
+    const allCurrentLevelIds: idChains = _.map(currentLevel, 'id');
+    _.forEach(currentLevel, (lvl: IHeaderChains) => (lvl.neighbors = _.difference(allCurrentLevelIds, [lvl.id])));
+
     return currentLevel;
   };
 

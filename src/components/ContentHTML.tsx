@@ -1,13 +1,10 @@
 import { h, FunctionComponent } from 'preact';
-import { PreactHTMLConverter } from 'preact-html-converter';
+import { VirtualDom } from '../scripts/scriptInterfaces';
 
-const converter = PreactHTMLConverter();
-
-export const ContentHTML: FunctionComponent<{ contentHTML: string; index: number }> = ({ contentHTML, index }) => {
-  // console.log(contentHTML);
+export const ContentHTML: FunctionComponent<{ contentHTML: VirtualDom; index: number }> = ({ contentHTML, index }) => {
   return (
     <div key={index} style={{ textAlign: 'start' }}>
-      {converter.convert(contentHTML)}
+      {contentHTML}
     </div>
   );
 };

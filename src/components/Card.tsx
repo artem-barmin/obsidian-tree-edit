@@ -6,9 +6,9 @@ import { ContentHTML } from './ContentHTML';
 import { HeaderHTML } from './HeaderHTML';
 
 export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChildren }) => {
-  const $divCard = useRef<HTMLDivElement>(null);
   const {
     id,
+    depth,
     headerHTML,
     contentsHTML,
     children,
@@ -20,6 +20,8 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChildren }) 
     isNeighbor,
     scrollElement
   } = card;
+
+  const $divCard = useRef<HTMLDivElement>(null);
   const classes: string[] = ['card'];
 
   if (isChild) classes.push('chain-down ');
@@ -34,7 +36,7 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChildren }) 
     <div
       className={classes.join(' ')}
       key={id}
-      onClick={() => showAllChildren(children, scrollChildren, parents, neighbors, id)}
+      onClick={() => showAllChildren(children, scrollChildren, parents, neighbors, id, depth)}
       ref={$divCard}
     >
       <HeaderHTML headerHTML={headerHTML} />

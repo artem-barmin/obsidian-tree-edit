@@ -15,11 +15,8 @@ export default class MyPlugin extends Plugin {
   settings!: TreeEditSettings;
   myTree!: MyTree;
   workspace!: Workspace;
-  // vault!: Vault;
 
   async onload(): Promise<void> {
-    // console.log('loading plugin');
-    // this.vault = this.app.vault;
     this.workspace = this.app.workspace;
     this.settings = Object.assign(
       {
@@ -35,12 +32,6 @@ export default class MyPlugin extends Plugin {
 
     await this.loadSettings();
 
-    // this.mount()
-
-    // this.addRibbonIcon('dice', 'Tree edit', () => {
-    // 	new Notice('This is a notice!');
-    // });
-
     this.addStatusBarItem().setText('Status Bar Text');
 
     this.registerView(MM_VIEW_TYPE, (leaf: WorkspaceLeaf): MyTree => {
@@ -55,42 +46,10 @@ export default class MyPlugin extends Plugin {
       name: 'My script',
       callback: () => this.markMapPreview(),
       hotkeys: []
-      // callback: () => this.SampleModal(),
-
-      // checkCallback: (checking: boolean) => {
-      // 	let leaf = this.app.workspace.activeLeaf;
-
-      // 	if (leaf) {
-      // 		if (checking) {
-      // 			return true;
-      // 		};
-      // 		new SampleModal(this.app).open();
-      // 	}
-
-      // 	return false;
-      // }
     });
 
     this.addSettingTab(new SampleSettingTab(this.app, this));
-
-    // this.registerCodeMirror((cm: CodeMirror.Editor) => {
-    // 	console.log('codemirror', cm);
-    // });
-
-    // this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-    // 	console.log('click', evt);
-    // });
-
-    // this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
   }
-
-  // mount() {
-
-  // 	render(
-  // 		createApp({}),
-  // 		this.appEl ?? (this.appEl = document.body.createDiv())
-  // 	);
-  // }
 
   markMapPreview(): void {
     const fileInfo = {
@@ -109,10 +68,6 @@ export default class MyPlugin extends Plugin {
     preview.open(mmPreview);
   }
 
-  // onunload() {
-  // 	console.log('unloading plugin');
-  // }
-
   async loadSettings(): Promise<void> {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
   }
@@ -129,28 +84,6 @@ export default class MyPlugin extends Plugin {
     return workspace.activeLeaf?.getDisplayText()!;
   }
 }
-
-// class SampleModal extends Modal {
-// 	[x: string]: any;
-
-// 	constructor(app: App) {
-// 		super(app);
-// 	}
-
-// 	getDisplayText(): string {
-// 		return this.displayText ?? 'Mind Map';
-// 	}
-
-// 	onOpen() {
-// 		let {contentEl} = this;
-// 		contentEl.setText('<div>qq</div>');
-// 	}
-
-// 	onClose() {
-// 		let {contentEl} = this;
-// 		contentEl.empty();
-// 	}
-// }
 
 class SampleSettingTab extends PluginSettingTab {
   plugin: MyPlugin;
@@ -174,7 +107,6 @@ class SampleSettingTab extends PluginSettingTab {
           .setValue('')
           .onChange(async (value) => {
             console.log(`Secret: ${value}`);
-            // this.plugin.settings = value;
             await this.plugin.saveSettings();
           })
       );

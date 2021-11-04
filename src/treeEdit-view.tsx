@@ -30,24 +30,6 @@ export default class MyTree extends ItemView {
     return 'dot-network';
   }
 
-  // onMoreOptionsMenu(menu: Menu): void {
-  // 		menu
-  // 		.addItem((item) =>
-  // 				item
-  // 				.setIcon('pin')
-  // 				.setTitle('Pin')
-  // 				.onClick(() => this.pinCurrentLeaf())
-  // 		)
-  // 		.addSeparator()
-  // 		.addItem((item) =>
-  // 				item
-  // 				.setIcon('image-file')
-  // 				.setTitle('Copy screenshot')
-  // 				// .onClick(() => copyImageToClipboard(this.svg))
-  // 		);
-  // 		menu.showAtPosition({x: 0, y: 0});
-  // }
-
   constructor(settings: TreeEditSettings, leaf: WorkspaceLeaf, initialFileInfo: { path: string; basename: string }) {
     super(leaf);
     this.settings = settings;
@@ -95,14 +77,6 @@ export default class MyTree extends ItemView {
   async update(): Promise<void> {
     if (this.filePath) {
       await this.readMarkDown();
-      // if(this.f.length === 0 || this.getLeafTarget().view.getViewType() != 'markdown'){
-      // removeExistingSVG();
-      // } else {
-      // const { root, features } = await this.transformMarkdown();
-      // this.displayEmpty(false);
-      // this.svg = createSVG(this.containerEl, this.settings.lineHeight);
-      // this.renderMarkmap(root, this.svg);
-      // }
       this.displayEmpty(true);
     }
     this.displayText = this.fileName != undefined ? `Mind Map of ${this.fileName}` : 'Mind Map';
@@ -146,31 +120,16 @@ export default class MyTree extends ItemView {
   }
 
   async displayEmpty(display: boolean): Promise<void> {
-    const md: string = await this.app.vault.adapter.read(this.filePath);
-    // console.log(md)
     if (this.emptyDiv === undefined) {
       const div: HTMLDivElement = document.createElement('div');
       div.className = 'pane-empty';
-      // div.innerText = divContent
       this.containerEl.children[1].appendChild(div);
       this.emptyDiv = div;
 
       render(<App />, this.emptyDiv);
     } else {
       render(<App />, this.emptyDiv ?? (this.emptyDiv = document.body.createDiv()));
-      // this.emptyDiv.innerText = divContent
     }
     this.emptyDiv.toggle(display);
   }
-
-  // pinCurrentLeaf() {
-  // 	this.isLeafPinned = true;
-  // 	this.pinAction = this.addAction('filled-pin', 'Pin', () => this.unPin(), 20);
-  // 	this.pinAction.addClass('is-active');
-  // }
-
-  // unPin() {
-  // 	this.isLeafPinned = false;
-  // 	this.pinAction.parentNode.removeChild(this.pinAction);
-  // }
 }

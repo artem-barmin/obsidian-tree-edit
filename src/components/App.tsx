@@ -1,5 +1,6 @@
 import { h, FunctionComponent } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
+import _ from 'lodash';
 
 import { readyState } from '../scripts/statePreactTree';
 import { ListColumnsDepths } from './ListColumnsDepths';
@@ -16,64 +17,54 @@ export const App: FunctionComponent = () => {
   const showAllChildren = (
     children: IDataChains[],
     scrollChildren: IDataChains[],
-    parents: idChains,
+    parents: IDataChains[],
     neighbors: idChains,
-    currentElemId: id
+    clickId: id,
+    clickDepth: number
   ): void => {
-    if (lastClickElem.current === currentElemId) return;
-    lastClickElem.current = currentElemId;
+    if (lastClickElem.current === clickId) return;
+    lastClickElem.current = clickId;
 
     setColumsWithCards((prevState) => {
       const newState: IPreactState[][] = [];
-      // let deleteEl: id = '';
-      // let clickElDepth: number = 0;
-      // const currentParentElem: id = parents[parents.length - 1];
+
+      const scrollingChildren = (scrollArr: IDataChains[]): void => {
+        scrollArr.forEach((scroll) => {
+          if (scroll.depth === clickDepth) {
+            scrollArr[scrollArr.indexOf(scroll)] = { id: clickId, depth: clickDepth };
+          }
+          parents.forEach((parent) => {
+            if (scroll.depth !== parent.depth) return;
+            scrollArr[scrollArr.indexOf(scroll)] = parent;
+          });
+        });
+      };
 
       for (const state of prevState) {
         for (const elem of state) {
-          if (currentElemId === elem.id) {
+          if (clickId === elem.id) {
             elem.isChild = true;
             elem.scrollElement = true;
           } else {
-            if (elem.isChild) elem.isChild = false;
-            if (elem.isParent) elem.isParent = false;
-            if (elem.isNeighbor) elem.isNeighbor = false;
-            if (elem.scrollElement) elem.scrollElement = false;
+            elem.isChild = false;
+            elem.isNeighbor = false;
+            elem.isParent = false;
+            elem.scrollElement = false;
           }
 
-          const child = children.find((child) => child.id === elem.id);
-          const scrollChild = scrollChildren.find((child) => child.id === elem.id);
+          const child: IDataChains | undefined = _.find(children, { id: elem.id });
+          const scrollChild: IDataChains | undefined = _.find(scrollChildren, { id: elem.id });
+          const parent: IDataChains | undefined = _.find(parents, { id: elem.id });
 
           if (child) elem.isChild = true;
           if (scrollChild) elem.scrollElement = true;
-          if (parents.includes(elem.id)) {
+          if (parent) {
             elem.isParent = true;
             elem.scrollElement = true;
+            scrollingChildren(elem.scrollChildren);
           }
           if (neighbors.includes(elem.id)) elem.isNeighbor = true;
-
-          // Сhange the previous clicked item to the current item
-          // if (currentParentElem === elem.id) {
-          //   const { depth: clickDepth } = elem.children.find((child) => child.id === currentElemId);
-          //   clickElDepth = clickDepth;
-          //   for (const child of elem.scrollChildren) {
-          //     if (clickDepth === child.depth && child.id !== currentElemId) {
-          //       deleteEl = child.id;
-          //     }
-          //   }
-
-          //   elem.scrollChildren = elem.scrollChildren.filter((delEl) => delEl.id !== deleteEl);
-          //   elem.scrollChildren.push({ id: currentElemId, depth: clickDepth });
-          // }
-
-          // if (parents.includes(elem.id)) {
-          //   if (elem.id !== currentParentElem) {
-          //     console.log(elem.scrollChildren);
-          //     console.log(elem.id);
-          //   }
-          // }
         }
-
         newState.push(state);
       }
 
