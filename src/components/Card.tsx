@@ -29,7 +29,7 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChildren }) 
   else classes.push('no-active');
 
   if (scrollElement && $divCard.current) {
-    $divCard.current.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    $divCard.current.scrollIntoView({ block: 'center' });
   }
 
   return (

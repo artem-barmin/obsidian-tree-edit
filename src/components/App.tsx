@@ -34,8 +34,9 @@ export const App: FunctionComponent = () => {
             scrollArr[scrollArr.indexOf(scroll)] = { id: clickId, depth: clickDepth };
           }
           parents.forEach((parent) => {
-            if (scroll.depth !== parent.depth) return;
-            scrollArr[scrollArr.indexOf(scroll)] = parent;
+            if (scroll.depth === parent.depth) {
+              scrollArr[scrollArr.indexOf(scroll)] = parent;
+            }
           });
         });
       };
@@ -73,7 +74,7 @@ export const App: FunctionComponent = () => {
   };
 
   return (
-    <section>
+    <section className="tree-edit">
       {columsWithCards.map((depths, index: number) => {
         return depths.length ? <ListColumnsDepths key={index} cards={depths} showAllChildren={showAllChildren} /> : null;
       })}

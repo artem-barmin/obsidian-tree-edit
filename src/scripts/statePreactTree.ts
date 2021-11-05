@@ -29,24 +29,22 @@ const initialState = async (markdown: Root) => {
   });
 
   for (const elem of childrenNode) {
-    if (elem.type === 'thematicBreak') continue;
+    if (elem.type !== 'thematicBreak') {
+      const orderLength: number = headersData.length;
+      const contentHTML: VirtualDom = converter.convert(await astToHTML(elem));
 
-    const orderLength: number = headersData.length;
-    const contentHTML: VirtualDom = converter.convert(await astToHTML(elem));
-
-    if (elem.type === 'heading') {
-      const objTitle: IHeadersData = {
-        id: nanoid(),
-        depth: elem.depth,
-        headerHTML: contentHTML,
-        contentsHTML: []
-      };
-      headersData.push(objTitle);
-      continue;
+      if (elem.type === 'heading') {
+        const objTitle: IHeadersData = {
+          id: nanoid(),
+          depth: elem.depth,
+          headerHTML: contentHTML,
+          contentsHTML: []
+        };
+        headersData.push(objTitle);
+      } else if (orderLength) {
+        headersData[orderLength - 1].contentsHTML.push(contentHTML);
+      }
     }
-
-    if (!orderLength) continue;
-    headersData[orderLength - 1].contentsHTML.push(contentHTML);
   }
 
   headersData.forEach(({ id, depth, headerHTML, contentsHTML }) => {
@@ -92,14 +90,11 @@ const buildTree = (inputArr: IHeadersData[]) => {
     while ((currentElement = globalInput[globalIndex])) {
       if (!currentElement || currentElement.depth < levelDepth) {
         break;
-      }
-      if (!currentLevel.length) {
+      } else if (!currentLevel.length) {
         currentLevel.push(buildNode(currentElement, parents));
         levelDepth = currentElement.depth;
         globalIndex++;
-        continue;
-      }
-      if (currentElement.depth > levelDepth) {
+      } else if (currentElement.depth > levelDepth) {
         const previousElement = currentLevel[currentLevel.length - 1];
         const { id, depth } = globalInput[globalIndex - 1];
         previousElement.children = buildLevel(globalInput, [...parents, { id, depth }]);
@@ -117,9 +112,7 @@ const buildTree = (inputArr: IHeadersData[]) => {
 
   let globalIndex: number = 0;
 
-  const tree = buildLevel(inputArr);
-
-  return tree;
+  return buildLevel(inputArr);
 };
 
 export const readyState = async () => {
@@ -132,10 +125,10 @@ export const readyState = async () => {
       const uniqDepths: number[] = [];
 
       children.forEach(({ depth, id }: IDataChains) => {
-        if (uniqDepths.includes(depth)) return;
-
-        uniqDepths.push(depth);
-        scrollChildren.push({ id, depth });
+        if (!uniqDepths.includes(depth)) {
+          uniqDepths.push(depth);
+          scrollChildren.push({ id, depth });
+        }
       });
     };
     const addChildren = (childrenInput: IHeaderChains[], state: IDataChains[]): void => {
@@ -148,13 +141,12 @@ export const readyState = async () => {
     const stateChain = (globalInput: IHeaderChains[]): void => {
       for (const chainEl of globalInput) {
         for (const state of preactState.flat()) {
-          if (chainEl.id !== state.id) continue;
-
-          state.parents.push(...chainEl.parents);
-          state.neighbors.push(...chainEl.neighbors);
-          addChildren(chainEl.children, state.children);
-          scrollingChildren(state.children, state.scrollChildren);
-          break;
+          if (chainEl.id === state.id) {
+            state.parents.push(...chainEl.parents);
+            state.neighbors.push(...chainEl.neighbors);
+            addChildren(chainEl.children, state.children);
+            scrollingChildren(state.children, state.scrollChildren);
+          }
         }
         stateChain(chainEl.children);
       }

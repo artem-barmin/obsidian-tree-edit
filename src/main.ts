@@ -11,7 +11,7 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
   mySetting: 'default'
 };
 
-export default class MyPlugin extends Plugin {
+export default class TreeEdit extends Plugin {
   settings!: TreeEditSettings;
   myTree!: MyTree;
   workspace!: Workspace;
@@ -86,9 +86,9 @@ export default class MyPlugin extends Plugin {
 }
 
 class SampleSettingTab extends PluginSettingTab {
-  plugin: MyPlugin;
+  plugin: TreeEdit;
 
-  constructor(app: App, plugin: MyPlugin) {
+  constructor(app: App, plugin: TreeEdit) {
     super(app, plugin);
     this.plugin = plugin;
   }

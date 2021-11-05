@@ -1,9 +1,8 @@
-import { MM_VIEW_TYPE } from './constants';
+import { render } from 'preact';
 import { EventRef, ItemView, Vault, Workspace, WorkspaceLeaf } from 'obsidian';
 import TreeEditSettings from './PluginSettings';
-import { render } from 'preact';
 import { App } from './components/App';
-// import './styles/index.scss';
+import { MM_VIEW_TYPE } from './constants';
 
 export default class MyTree extends ItemView {
   filePath: string;
@@ -40,10 +39,8 @@ export default class MyTree extends ItemView {
   }
 
   async onOpen() {
-    // this.obsMarkmap = new ObsidianMarkmap(this.vault);
     this.registerActiveLeafUpdate();
     this.listeners = [
-      // this.workspace.on('layout-change', () => this.update()),
       this.workspace.on('resize', () => this.update()),
       this.workspace.on('css-change', () => this.update()),
       this.leaf.on('group-change', (group) => this.updateLinkedLeaf(group, this))
@@ -79,7 +76,7 @@ export default class MyTree extends ItemView {
       await this.readMarkDown();
       this.displayEmpty(true);
     }
-    this.displayText = this.fileName != undefined ? `Mind Map of ${this.fileName}` : 'Mind Map';
+    this.displayText = this.fileName != undefined ? `Tree edit of ${this.fileName}` : 'Tree Edit';
     this.load();
   }
 
