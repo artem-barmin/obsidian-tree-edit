@@ -1,11 +1,19 @@
-import { IPreactState } from './scripts/scriptInterfaces';
+import { id, IDataChains, idChains, IPreactState } from './scripts/scriptInterfaces';
 
 export interface IListColumnsDepths_Props {
   cards: IPreactState[];
-  showAllChildren: Function;
+  showAllChain: Function;
+}
+export interface IDataSelectedElem {
+  id: id;
+  depth: number;
+  children: IDataChains[];
+  parents: IDataChains[];
+  neighbors: idChains;
+  scrollChildren: IDataChains[];
 }
 
 export interface ICard_Props {
-  showAllChildren: Function;
+  showAllChain: Function;
   card: IPreactState;
 }

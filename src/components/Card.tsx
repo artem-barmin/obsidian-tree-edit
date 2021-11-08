@@ -1,11 +1,12 @@
 import { h, FunctionComponent } from 'preact';
 import { useRef } from 'preact/hooks';
+import { nanoid } from 'nanoid';
 
 import { ICard_Props } from '../interfaces';
 import { ContentHTML } from './ContentHTML';
 import { HeaderHTML } from './HeaderHTML';
 
-export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChildren }) => {
+export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain }) => {
   const {
     id,
     depth,
@@ -18,7 +19,7 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChildren }) 
     isParent,
     isChild,
     isNeighbor,
-    scrollElement
+    scrollElement,
   } = card;
 
   const $divCard = useRef<HTMLDivElement>(null);
@@ -35,14 +36,13 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChildren }) 
   return (
     <div
       className={classes.join(' ')}
-      key={id}
-      onClick={() => showAllChildren(children, scrollChildren, parents, neighbors, id, depth)}
+      onClick={() => showAllChain({ id, depth, children, parents, neighbors, scrollChildren })}
       ref={$divCard}
     >
       <HeaderHTML headerHTML={headerHTML} />
 
-      {contentsHTML.map((content, index: number) => {
-        return <ContentHTML contentHTML={content} index={index} />;
+      {contentsHTML.map((content) => {
+        return <ContentHTML contentHTML={content} key={nanoid()} />;
       })}
     </div>
   );
