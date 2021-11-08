@@ -1,13 +1,53 @@
-body {
-  color: white;
+body .pane-empty,
+.tree-edit {
+  width: 100%;
+  height: 100%;
 }
 
 .pane-empty {
-  /* color: rgb(175, 0, 0);
-    font-weight: 600;
-    background: rgb(165, 165, 165); */
-  border-radius: 13px;
-  /* border: 1px solid rgb(175, 0, 0); */
   padding: 15px;
-  width: 100%;
+}
+
+.tree-edit {
+  display: flex;
+  font-weight: 600;
+}
+
+.column {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  text-align: center;
+  width: 33%;
+}
+.column::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+.group {
+  border-radius: 5px;
+}
+
+.empty-place {
+  min-height: 20px;
+  height: 50%;
+}
+
+.card {
+  padding: 5px 15px;
+  background: rgb(73, 73, 73);
+}
+.chain-down {
+  background: rgb(165, 165, 165);
+  color: rgb(255, 92, 92);
+}
+.chain-up {
+  background: rgba(128, 128, 128, 0.329);
+  color: rgb(255, 92, 92);
+  font-weight: 800;
+}
+
+.no-active:hover,
+.chain-up:hover {
+  background: rgba(146, 146, 146, 0.5);
 }

@@ -43,7 +43,7 @@ export default class MyTree extends ItemView {
     this.listeners = [
       this.workspace.on('resize', () => this.update()),
       this.workspace.on('css-change', () => this.update()),
-      this.leaf.on('group-change', (group) => this.updateLinkedLeaf(group, this))
+      this.leaf.on('group-change', (group) => this.updateLinkedLeaf(group, this)),
     ];
   }
 
@@ -123,9 +123,9 @@ export default class MyTree extends ItemView {
       this.containerEl.children[1].appendChild(div);
       this.emptyDiv = div;
 
-      render(<App />, this.emptyDiv);
+      render(<App markdownText={this.currentMd} />, this.emptyDiv);
     } else {
-      render(<App />, this.emptyDiv ?? (this.emptyDiv = document.body.createDiv()));
+      render(<App markdownText={this.currentMd} />, this.emptyDiv ?? (this.emptyDiv = document.body.createDiv()));
     }
     this.emptyDiv.toggle(display);
   }

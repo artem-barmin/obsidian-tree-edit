@@ -6,12 +6,12 @@ import { readyState } from '../scripts/statePreactTree';
 import { ListColumnsDepths } from './ListColumnsDepths';
 import { IDataChains, id, idChains, IPreactState } from '../scripts/scriptInterfaces';
 
-export const App: FunctionComponent = () => {
+export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText }) => {
   const [columsWithCards, setColumsWithCards] = useState<IPreactState[][]>([]);
   const lastClickElem = useRef<id>('');
 
   useEffect(() => {
-    (async () => setColumsWithCards(await readyState()))();
+    (async () => setColumsWithCards(await readyState(markdownText)))();
   }, []);
 
   const showAllChildren = (

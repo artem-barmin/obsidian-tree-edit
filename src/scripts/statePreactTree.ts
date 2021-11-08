@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { remark } from 'remark';
 import remarkHtml from 'remark-html';
 import remarkParse from 'remark-parse/lib';
@@ -6,9 +7,6 @@ import { visit } from 'unist-util-visit';
 import { Root } from 'remark-parse/lib';
 import { nanoid } from 'nanoid';
 import { PreactHTMLConverter } from 'preact-html-converter';
-import _ from 'lodash';
-
-import { markdownText } from '../constMd';
 import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains, VirtualDom } from './scriptInterfaces';
 
 const converter = PreactHTMLConverter();
@@ -38,7 +36,7 @@ const initialState = async (markdown: Root) => {
           id: nanoid(),
           depth: elem.depth,
           headerHTML: contentHTML,
-          contentsHTML: []
+          contentsHTML: [],
         };
         headersData.push(objTitle);
       } else if (orderLength) {
@@ -60,7 +58,7 @@ const initialState = async (markdown: Root) => {
       isParent: false,
       isChild: false,
       isNeighbor: false,
-      scrollElement: false
+      scrollElement: false,
     };
 
     const currentDepth = preactState[depth - 1];
@@ -76,7 +74,7 @@ const buildTree = (inputArr: IHeadersData[]) => {
     depth: input.depth,
     children: [],
     parents: parentArr && parentArr.length ? [...parentArr] : [],
-    neighbors: []
+    neighbors: [],
   });
 
   const buildLevel = (globalInput: IHeadersData[], parentArr?: IDataChains[]) => {
@@ -115,7 +113,7 @@ const buildTree = (inputArr: IHeadersData[]) => {
   return buildLevel(inputArr);
 };
 
-export const readyState = async () => {
+export const readyState = async (markdownText: string) => {
   const initalMD: Root = remark().parse(markdownText);
   const { headersData, preactState } = await initialState(initalMD);
   const headerChains = buildTree(headersData);
