@@ -4,8 +4,9 @@ import _ from 'lodash';
 
 import { readyState } from '../scripts/statePreactTree';
 import { ListColumnsDepths } from './ListColumnsDepths';
-import { IDataChains, IPreactState } from '../scripts/scriptInterfaces';
+import { id, IDataChains, IPreactState } from '../scripts/scriptInterfaces';
 import { IDataSelectedElem } from 'src/interfaces';
+import { createNumericLiteral } from 'typescript';
 
 export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText }) => {
   const [columsWithCards, setColumsWithCards] = useState<IPreactState[][]>([]);
@@ -83,7 +84,7 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
       const depthIndex: number = selectedElem.depth - 1;
       let currentIndex: number = 0;
 
-      if (depthIndex > 0) {
+      if (depthIndex >= 0) {
         for (const elem of state[depthIndex]) {
           if (elem.id === selectedElem.id) {
             currentIndex = state[depthIndex].indexOf(elem);
@@ -91,13 +92,33 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
         }
 
         const lastIndex: number = state[depthIndex].length - 1;
-        if (code === 'ArrowUp' && currentIndex > 0) currentIndex--;
-        else if (code === 'ArrowDown' && currentIndex <= lastIndex) currentIndex++;
 
-        const returnedItem: IPreactState | undefined = state[depthIndex][currentIndex];
-        if (returnedItem) {
-          const { id, depth, children, parents, neighbors, scrollChildren } = returnedItem;
-          showAllChain({ id, depth, children, parents, neighbors, scrollChildren });
+        if (code === 'ArrowUp' && currentIndex > 0) currentIndex--;
+        else if (code === 'ArrowDown' && currentIndex < lastIndex) currentIndex++;
+
+        const returnedItem: IPreactState = state[depthIndex][currentIndex];
+        const { id, depth, children, parents, neighbors, scrollChildren } = returnedItem;
+        showAllChain({ id, depth, children, parents, neighbors, scrollChildren });
+      }
+    } else if (code === 'ArrowLeft' || code === 'ArrowRight') {
+      e.preventDefault();
+
+      const parentOrChild = (parent: boolean, selectedId: id): IDataChains | undefined => {
+        for (const { id, parents, scrollChildren } of state.flat()) {
+          if (selectedId === id) {
+            return parent ? parents[parents.length - 1] : scrollChildren[0];
+          }
+        }
+      };
+
+      const needElem = code === 'ArrowLeft' ? parentOrChild(true, selectedElem.id) : parentOrChild(false, selectedElem.id);
+
+      if (needElem!) {
+        for (const elem of state[needElem.depth - 1]) {
+          if (needElem.id === elem.id) {
+            const { id, depth, children, parents, neighbors, scrollChildren } = elem;
+            showAllChain({ id, depth, children, parents, neighbors, scrollChildren });
+          }
         }
       }
     }

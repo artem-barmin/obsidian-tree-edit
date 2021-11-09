@@ -8,7 +8,7 @@ interface MyPluginSettings {
 }
 
 const DEFAULT_SETTINGS: MyPluginSettings = {
-  mySetting: 'default'
+  mySetting: 'default',
 };
 
 export default class TreeEdit extends Plugin {
@@ -25,7 +25,6 @@ export default class TreeEdit extends Plugin {
         lineHeight: '1em',
         spacingVertical: 5,
         spacingHorizontal: 80,
-        paddingX: 8
       },
       await this.loadData()
     );
@@ -37,7 +36,7 @@ export default class TreeEdit extends Plugin {
     this.registerView(MM_VIEW_TYPE, (leaf: WorkspaceLeaf): MyTree => {
       return (this.myTree = new MyTree(this.settings, leaf, {
         path: this.activeLeafPath(this.workspace),
-        basename: this.activeLeafName(this.workspace)
+        basename: this.activeLeafName(this.workspace),
       }));
     });
 
@@ -45,7 +44,7 @@ export default class TreeEdit extends Plugin {
       id: 'open-sample-modal',
       name: 'My script',
       callback: () => this.markMapPreview(),
-      hotkeys: []
+      hotkeys: [],
     });
 
     this.addSettingTab(new SampleSettingTab(this.app, this));
@@ -54,7 +53,7 @@ export default class TreeEdit extends Plugin {
   markMapPreview(): void {
     const fileInfo = {
       path: this.activeLeafPath(this.workspace),
-      basename: this.activeLeafName(this.workspace)
+      basename: this.activeLeafName(this.workspace),
     };
     this.initPreview(fileInfo);
   }

@@ -7,7 +7,7 @@ import { visit } from 'unist-util-visit';
 import { Root } from 'remark-parse/lib';
 import { nanoid } from 'nanoid';
 import { PreactHTMLConverter } from 'preact-html-converter';
-import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains, VirtualDom } from './scriptInterfaces';
+import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains } from './scriptInterfaces';
 
 const converter = PreactHTMLConverter();
 
@@ -29,18 +29,17 @@ const initialState = async (markdown: Root) => {
   for (const elem of childrenNode) {
     if (elem.type !== 'thematicBreak') {
       const orderLength: number = headersData.length;
-      const contentHTML: VirtualDom = converter.convert(await astToHTML(elem));
 
       if (elem.type === 'heading') {
         const objTitle: IHeadersData = {
           id: nanoid(),
           depth: elem.depth,
-          headerHTML: contentHTML,
+          headerHTML: converter.convert(await astToHTML(elem)),
           contentsHTML: [],
         };
         headersData.push(objTitle);
       } else if (orderLength) {
-        headersData[orderLength - 1].contentsHTML.push(contentHTML);
+        headersData[orderLength - 1].contentsHTML.push(converter.convert(await astToHTML(elem)));
       }
     }
   }

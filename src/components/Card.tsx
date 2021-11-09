@@ -25,7 +25,7 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain }) => 
   const $divCard = useRef<HTMLDivElement>(null);
   const classes: string[] = ['card'];
 
-  if (isChild) classes.push('chain-down ');
+  if (isChild) classes.push('chain-down');
   else if (isParent || isNeighbor) classes.push('chain-up');
   else classes.push('no-active');
 

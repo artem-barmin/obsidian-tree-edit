@@ -6,5 +6,4 @@ export default class TreeEditSettings {
   lineHeight: string = '1em';
   spacingVertical: number = 5;
   spacingHorizontal: number = 80;
-  paddingX: number = 8;
 }
