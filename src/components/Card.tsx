@@ -16,6 +16,7 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain }) => 
     scrollChildren,
     parents,
     neighbors,
+    isSelected,
     isParent,
     isChild,
     isNeighbor,
@@ -25,7 +26,8 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain }) => 
   const $divCard = useRef<HTMLDivElement>(null);
   const classes: string[] = ['card'];
 
-  if (isChild) classes.push('chain-down');
+  if (isSelected) classes.push('selected-item');
+  else if (isChild) classes.push('chain-down');
   else if (isParent || isNeighbor) classes.push('chain-up');
   else classes.push('no-active');
 

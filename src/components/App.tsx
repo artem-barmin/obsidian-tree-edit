@@ -6,7 +6,6 @@ import { readyState } from '../scripts/statePreactTree';
 import { ListColumnsDepths } from './ListColumnsDepths';
 import { id, IDataChains, IPreactState } from '../scripts/scriptInterfaces';
 import { IDataSelectedElem } from 'src/interfaces';
-import { createNumericLiteral } from 'typescript';
 
 export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText }) => {
   const [columsWithCards, setColumsWithCards] = useState<IPreactState[][]>([]);
@@ -30,25 +29,32 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
     setColumsWithCards((prevState) => {
       const newState: IPreactState[][] = [];
 
-      const scrollingChildren = (scrollArr: IDataChains[]): void => {
+      const scrollingChildren = (scrollArr: IDataChains[], clickChildren: IDataChains[], clickScrolls: IDataChains[]): void => {
+        const chainPositions = (inputArr: IDataChains[], toArr: IDataChains[], scrollEl: IDataChains): void => {
+          inputArr.forEach((elem) => {
+            if (scrollEl.depth === elem.depth) {
+              toArr[toArr.indexOf(scrollEl)] = elem;
+            }
+          });
+        };
+
         scrollArr.forEach((scroll) => {
           if (scroll.depth === clickDepth) {
             scrollArr[scrollArr.indexOf(scroll)] = { id: clickId, depth: clickDepth };
           }
-          parents.forEach((parent) => {
-            if (scroll.depth === parent.depth) {
-              scrollArr[scrollArr.indexOf(scroll)] = parent;
-            }
-          });
+
+          chainPositions(clickChildren, scrollArr, scroll);
+          chainPositions(clickScrolls, scrollArr, scroll);
         });
       };
 
       for (const state of prevState) {
         for (const elem of state) {
           if (clickId === elem.id) {
-            elem.isChild = true;
+            elem.isSelected = true;
             elem.scrollElement = true;
           } else {
+            elem.isSelected = false;
             elem.isChild = false;
             elem.isNeighbor = false;
             elem.isParent = false;
@@ -64,7 +70,7 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
           if (parent) {
             elem.isParent = true;
             elem.scrollElement = true;
-            scrollingChildren(elem.scrollChildren);
+            scrollingChildren(elem.scrollChildren, parents, scrollChildren);
           }
           if (neighbors.includes(elem.id)) elem.isNeighbor = true;
         }
@@ -75,7 +81,7 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
     });
   };
 
-  const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, state: IPreactState[][]): void => {
+  const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, inputState: IPreactState[][]): void => {
     const code: string = e.code;
 
     if (code === 'ArrowUp' || code === 'ArrowDown') {
@@ -85,25 +91,29 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
       let currentIndex: number = 0;
 
       if (depthIndex >= 0) {
-        for (const elem of state[depthIndex]) {
+        for (const elem of inputState[depthIndex]) {
           if (elem.id === selectedElem.id) {
-            currentIndex = state[depthIndex].indexOf(elem);
+            currentIndex = inputState[depthIndex].indexOf(elem);
           }
         }
 
-        const lastIndex: number = state[depthIndex].length - 1;
+        const lastIndex: number = inputState[depthIndex].length - 1;
 
         if (code === 'ArrowUp' && currentIndex > 0) currentIndex--;
         else if (code === 'ArrowDown' && currentIndex < lastIndex) currentIndex++;
 
-        const returnedItem: IPreactState = state[depthIndex][currentIndex];
+        const returnedItem: IPreactState = inputState[depthIndex][currentIndex];
         const { id, depth, children, parents, neighbors, scrollChildren } = returnedItem;
         showAllChain({ id, depth, children, parents, neighbors, scrollChildren });
       }
     } else if (code === 'ArrowLeft' || code === 'ArrowRight') {
       e.preventDefault();
 
-      const parentOrChild = (parent: boolean, selectedId: id): IDataChains | undefined => {
+      const parentOrChild = (
+        parent: boolean,
+        selectedId: id = selectedElem.id,
+        state: IPreactState[][] = inputState
+      ): IDataChains | undefined => {
         for (const { id, parents, scrollChildren } of state.flat()) {
           if (selectedId === id) {
             return parent ? parents[parents.length - 1] : scrollChildren[0];
@@ -111,10 +121,10 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
         }
       };
 
-      const needElem = code === 'ArrowLeft' ? parentOrChild(true, selectedElem.id) : parentOrChild(false, selectedElem.id);
+      const needElem = code === 'ArrowLeft' ? parentOrChild(true) : parentOrChild(false);
 
       if (needElem!) {
-        for (const elem of state[needElem.depth - 1]) {
+        for (const elem of inputState[needElem.depth - 1]) {
           if (needElem.id === elem.id) {
             const { id, depth, children, parents, neighbors, scrollChildren } = elem;
             showAllChain({ id, depth, children, parents, neighbors, scrollChildren });

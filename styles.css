@@ -37,17 +37,24 @@ body .pane-empty,
   padding: 5px 15px;
   background: rgb(73, 73, 73);
 }
-.chain-down {
+.selected-item {
   background: rgb(165, 165, 165);
-  color: rgb(255, 92, 92);
+  color: #483699;
+}
+.chain-down {
+  background: rgba(165, 165, 165, 0.63);
+  color: #483699;
 }
 .chain-up {
   background: rgba(128, 128, 128, 0.329);
-  color: rgb(255, 92, 92);
-  font-weight: 800;
+  color: #675b9c;
 }
 
 .no-active:hover,
 .chain-up:hover {
   background: rgba(146, 146, 146, 0.5);
+}
+
+.chain-up:hover {
+  color: #483699c0;
 }

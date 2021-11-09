@@ -54,6 +54,7 @@ const initialState = async (markdown: Root) => {
       scrollChildren: [],
       parents: [],
       neighbors: [],
+      isSelected: false,
       isParent: false,
       isChild: false,
       isNeighbor: false,
@@ -117,7 +118,7 @@ export const readyState = async (markdownText: string) => {
   const { headersData, preactState } = await initialState(initalMD);
   const headerChains = buildTree(headersData);
 
-  const definingChains = (inputChain: IHeaderChains[]): void => {
+  const definingChains = (inputChain: IHeaderChains[], inputState: IPreactState[][]): void => {
     const scrollingChildren = (children: IDataChains[], scrollChildren: IDataChains[]) => {
       const uniqDepths: number[] = [];
 
@@ -135,9 +136,9 @@ export const readyState = async (markdownText: string) => {
       }
     };
 
-    const stateChain = (globalInput: IHeaderChains[]): void => {
+    const stateChain = (globalInput: IHeaderChains[], globalState: IPreactState[][] = inputState): void => {
       for (const chainEl of globalInput) {
-        for (const state of preactState.flat()) {
+        for (const state of globalState.flat()) {
           if (chainEl.id === state.id) {
             state.parents.push(...chainEl.parents);
             state.neighbors.push(...chainEl.neighbors);
@@ -151,7 +152,7 @@ export const readyState = async (markdownText: string) => {
     stateChain(inputChain);
   };
 
-  definingChains(headerChains);
+  definingChains(headerChains, preactState);
 
   return preactState;
 };

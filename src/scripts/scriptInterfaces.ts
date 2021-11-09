@@ -11,6 +11,7 @@ export interface IPreactState extends IStateInfo {
   scrollChildren: IDataChains[];
   parents: IDataChains[];
   neighbors: idChains;
+  isSelected: boolean;
   isParent: boolean;
   isChild: boolean;
   isNeighbor: boolean;
