@@ -1,10 +1,12 @@
 import { render } from 'preact';
 import { EventRef, ItemView, Vault, Workspace, WorkspaceLeaf } from 'obsidian';
-import TreeEditSettings from './PluginSettings';
+import _ from 'lodash';
+import TreeEditSettings from './settings';
 import { App } from './components/App';
-import { MM_VIEW_TYPE } from './constants';
+import { MD_VIEW_TYPE, MM_VIEW_TYPE } from './constants';
+import { fileContents } from './scripts/statePreactTree';
 
-export default class MyTree extends ItemView {
+export default class TreeeditView extends ItemView {
   filePath: string;
   fileName: string;
   linkedLeaf: WorkspaceLeaf | undefined;
@@ -22,7 +24,7 @@ export default class MyTree extends ItemView {
   }
 
   getDisplayText(): string {
-    return this.displayText ?? 'Mind Map';
+    return this.displayText ?? 'Tree Edit';
   }
 
   getIcon(): string {
@@ -51,6 +53,10 @@ export default class MyTree extends ItemView {
     this.listeners.forEach((listener) => this.workspace.offref(listener));
   }
 
+  registerActiveLeafUpdate() {
+    this.registerInterval(window.setInterval(() => this.checkAndUpdate(), 1000));
+  }
+
   async checkAndUpdate(): Promise<void> {
     try {
       if (await this.checkActiveLeaf()) {
@@ -61,7 +67,7 @@ export default class MyTree extends ItemView {
     }
   }
 
-  updateLinkedLeaf(group: string, mmView: MyTree): void {
+  updateLinkedLeaf(group: string, mmView: TreeeditView): void {
     if (group === null) {
       mmView.linkedLeaf = undefined;
       return;
@@ -74,14 +80,15 @@ export default class MyTree extends ItemView {
   async update(): Promise<void> {
     if (this.filePath) {
       await this.readMarkDown();
-      this.displayEmpty(true);
+
+      const fileHeaders: any[] | undefined = _.find(fileContents(this.currentMd), { type: 'heading' });
+
+      !fileHeaders || this.getLeafTarget().view.getViewType() !== MD_VIEW_TYPE
+        ? this.displayEmpty(true)
+        : this.displayEmpty(false);
     }
     this.displayText = this.fileName != undefined ? `Tree edit of ${this.fileName}` : 'Tree Edit';
     this.load();
-  }
-
-  registerActiveLeafUpdate() {
-    this.registerInterval(window.setInterval(() => this.checkAndUpdate(), 1000));
   }
 
   getLeafTarget(): WorkspaceLeaf {
@@ -122,11 +129,13 @@ export default class MyTree extends ItemView {
       div.className = 'pane-empty';
       this.containerEl.children[1].appendChild(div);
       this.emptyDiv = div;
+    }
 
+    if (!display) {
+      this.emptyDiv.innerHTML = '';
       render(<App markdownText={this.currentMd} />, this.emptyDiv);
     } else {
-      render(<App markdownText={this.currentMd} />, this.emptyDiv ?? (this.emptyDiv = document.body.createDiv()));
+      this.emptyDiv.innerHTML = 'Headers not found';
     }
-    this.emptyDiv.toggle(display);
   }
 }

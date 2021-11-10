@@ -1,7 +1,8 @@
-import { App, Plugin, PluginSettingTab, Setting, Workspace, WorkspaceLeaf } from 'obsidian';
+import { Plugin, Vault, Workspace, WorkspaceLeaf } from 'obsidian';
 import { MM_VIEW_TYPE } from './constants';
-import TreeEditSettings from './PluginSettings';
-import MyTree from './treeEdit-view';
+import TreeEditSettings from './settings';
+import { SampleSettingTab } from './settings-tab';
+import TreeeditView from './treeEdit-view';
 
 interface MyPluginSettings {
   mySetting: string;
@@ -12,11 +13,13 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 };
 
 export default class TreeEdit extends Plugin {
+  vault!: Vault;
   settings!: TreeEditSettings;
-  myTree!: MyTree;
+  myTree!: TreeeditView;
   workspace!: Workspace;
 
   async onload(): Promise<void> {
+    this.vault = this.app.vault;
     this.workspace = this.app.workspace;
     this.settings = Object.assign(
       {
@@ -31,10 +34,8 @@ export default class TreeEdit extends Plugin {
 
     await this.loadSettings();
 
-    this.addStatusBarItem().setText('Status Bar Text');
-
-    this.registerView(MM_VIEW_TYPE, (leaf: WorkspaceLeaf): MyTree => {
-      return (this.myTree = new MyTree(this.settings, leaf, {
+    this.registerView(MM_VIEW_TYPE, (leaf: WorkspaceLeaf): TreeeditView => {
+      return (this.myTree = new TreeeditView(this.settings, leaf, {
         path: this.activeLeafPath(this.workspace),
         basename: this.activeLeafName(this.workspace),
       }));
@@ -42,15 +43,15 @@ export default class TreeEdit extends Plugin {
 
     this.addCommand({
       id: 'open-sample-modal',
-      name: 'My script',
-      callback: () => this.markMapPreview(),
+      name: 'Writing and editing in the form of a ginko tree',
+      callback: () => this.treeEditPreview(),
       hotkeys: [],
     });
 
     this.addSettingTab(new SampleSettingTab(this.app, this));
   }
 
-  markMapPreview(): void {
+  treeEditPreview(): void {
     const fileInfo = {
       path: this.activeLeafPath(this.workspace),
       basename: this.activeLeafName(this.workspace),
@@ -63,7 +64,7 @@ export default class TreeEdit extends Plugin {
       return;
     }
     const preview = this.app.workspace.splitActiveLeaf(this.settings.splitDirection);
-    const mmPreview = new MyTree(this.settings, preview, fileInfo);
+    const mmPreview = new TreeeditView(this.settings, preview, fileInfo);
     preview.open(mmPreview);
   }
 
@@ -81,33 +82,5 @@ export default class TreeEdit extends Plugin {
 
   activeLeafName(workspace: Workspace): string {
     return workspace.activeLeaf?.getDisplayText()!;
-  }
-}
-
-class SampleSettingTab extends PluginSettingTab {
-  plugin: TreeEdit;
-
-  constructor(app: App, plugin: TreeEdit) {
-    super(app, plugin);
-    this.plugin = plugin;
-  }
-
-  display(): void {
-    const { containerEl } = this;
-    containerEl.empty();
-    containerEl.createEl('h2', { text: 'Settings for my awesome plugin.' });
-
-    new Setting(containerEl)
-      .setName('Setting #1')
-      .setDesc("It's a secret")
-      .addText((text) =>
-        text
-          .setPlaceholder('Enter your secret')
-          .setValue('')
-          .onChange(async (value) => {
-            console.log(`Secret: ${value}`);
-            await this.plugin.saveSettings();
-          })
-      );
   }
 }

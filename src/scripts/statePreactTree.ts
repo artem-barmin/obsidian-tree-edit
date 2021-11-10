@@ -11,22 +11,28 @@ import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains } from
 
 const converter = PreactHTMLConverter();
 
-const astToHTML = async (ast: any): Promise<string> => {
-  const resultMD: string = remark().stringify(ast);
-  const resultHTML = await unified().use(remarkParse).use(remarkHtml).process(resultMD);
-  return String(resultHTML);
-};
-
-const initialState = async (markdown: Root) => {
-  const headersData: IHeadersData[] = [];
-  const preactState: IPreactState[][] = [];
+export const fileContents = (markdownText: string): any[] => {
+  const markdown: Root = remark().parse(markdownText);
   const childrenNode: any = [];
 
   visit(markdown, 'root', (node): void => {
     childrenNode.push(...node.children);
   });
 
-  for (const elem of childrenNode) {
+  return childrenNode;
+};
+
+const astToHTML = async (ast: any): Promise<string> => {
+  const resultMD: string = remark().stringify(ast);
+  const resultHTML = await unified().use(remarkParse).use(remarkHtml).process(resultMD);
+  return String(resultHTML);
+};
+
+const initialState = async (markdownText: string) => {
+  const headersData: IHeadersData[] = [];
+  const preactState: IPreactState[][] = [];
+
+  for (const elem of fileContents(markdownText)) {
     if (elem.type !== 'thematicBreak') {
       const orderLength: number = headersData.length;
 
@@ -114,8 +120,8 @@ const buildTree = (inputArr: IHeadersData[]) => {
 };
 
 export const readyState = async (markdownText: string) => {
-  const initalMD: Root = remark().parse(markdownText);
-  const { headersData, preactState } = await initialState(initalMD);
+  // const initalMD: Root = remark().parse(markdownText);
+  const { headersData, preactState } = await initialState(markdownText);
   const headerChains = buildTree(headersData);
 
   const definingChains = (inputChain: IHeaderChains[], inputState: IPreactState[][]): void => {

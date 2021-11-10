@@ -12,7 +12,9 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
   const lastClickElem = useRef<IDataChains>({ id: '', depth: 0 });
 
   useEffect(() => {
-    (async () => setColumsWithCards(await readyState(markdownText)))();
+    if (markdownText) {
+      (async () => setColumsWithCards(await readyState(markdownText)))();
+    }
   }, [markdownText]);
 
   const showAllChain = ({
@@ -29,7 +31,7 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
     setColumsWithCards((prevState) => {
       const newState: IPreactState[][] = [];
 
-      const scrollingChildren = (scrollArr: IDataChains[], clickChildren: IDataChains[], clickScrolls: IDataChains[]): void => {
+      const scrollingChildren = (scrollArr: IDataChains[], clickParents: IDataChains[], clickScrolls: IDataChains[]): void => {
         const chainPositions = (inputArr: IDataChains[], toArr: IDataChains[], scrollEl: IDataChains): void => {
           inputArr.forEach((elem) => {
             if (scrollEl.depth === elem.depth) {
@@ -43,7 +45,7 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
             scrollArr[scrollArr.indexOf(scroll)] = { id: clickId, depth: clickDepth };
           }
 
-          chainPositions(clickChildren, scrollArr, scroll);
+          chainPositions(clickParents, scrollArr, scroll);
           chainPositions(clickScrolls, scrollArr, scroll);
         });
       };
@@ -123,7 +125,7 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
 
       const needElem = code === 'ArrowLeft' ? parentOrChild(true) : parentOrChild(false);
 
-      if (needElem!) {
+      if (needElem! && inputState[needElem.depth - 1]) {
         for (const elem of inputState[needElem.depth - 1]) {
           if (needElem.id === elem.id) {
             const { id, depth, children, parents, neighbors, scrollChildren } = elem;
