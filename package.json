@@ -20,6 +20,9 @@
     "@types/showdown": "^1.9.4"
   },
   "dependencies": {
+    "@mischnic/codemirror-preact": "^0.1.1",
+    "codemirror": "^5.63.3",
+    "lodash": "^4.17.21",
     "nanoid": "^3.1.30",
     "node-sass": "^6.0.1",
     "normalize": "^0.3.1",
@@ -27,6 +30,7 @@
     "obsidian": "^0.12.17",
     "parse5": "^6.0.1",
     "preact": "^10.5.14",
+    "preact-codemirror": "^1.0.1",
     "preact-html-converter": "^0.4.2",
     "preact-markdown": "^2.0.0",
     "remark": "^14.0.1",
@@ -41,7 +45,6 @@
     "tslib": "^2.2.0",
     "typescript": "^4.4.3",
     "unified": "^10.1.0",
-    "unist-util-visit": "^4.1.0",
-    "lodash": "^4.17.21"
+    "unist-util-visit": "^4.1.0"
   }
 }

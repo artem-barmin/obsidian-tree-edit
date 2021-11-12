@@ -12,9 +12,7 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
   const lastClickElem = useRef<IDataChains>({ id: '', depth: 0 });
 
   useEffect(() => {
-    if (markdownText) {
-      (async () => setColumsWithCards(await readyState(markdownText)))();
-    }
+    (async () => setColumsWithCards(await readyState(markdownText)))();
   }, [markdownText]);
 
   const showAllChain = ({
@@ -57,6 +55,7 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
             elem.scrollElement = true;
           } else {
             elem.isSelected = false;
+            elem.isEdit = false;
             elem.isChild = false;
             elem.isNeighbor = false;
             elem.isParent = false;
@@ -81,6 +80,17 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
 
       return newState;
     });
+  };
+
+  const cardAction = (edit: boolean) => {
+    setColumsWithCards((prevState) =>
+      prevState.map((state) =>
+        state.map((elem) => {
+          if (elem.isSelected) elem.isEdit = edit;
+          return elem;
+        })
+      )
+    );
   };
 
   const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, inputState: IPreactState[][]): void => {
@@ -139,7 +149,9 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
   return (
     <section className="tree-edit" onKeyDown={(e) => onKeyDown(e, lastClickElem.current, columsWithCards)} tabIndex={0}>
       {columsWithCards.map((depths, index: number) => {
-        return depths.length ? <ListColumnsDepths key={index} cards={depths} showAllChain={showAllChain} /> : null;
+        return depths.length ? (
+          <ListColumnsDepths key={index} cards={depths} showAllChain={showAllChain} cardAction={cardAction} />
+        ) : null;
       })}
     </section>
   );

@@ -1,22 +1,25 @@
 import { h, FunctionComponent } from 'preact';
-import { useRef } from 'preact/hooks';
-import { nanoid } from 'nanoid';
+import { useRef, useState } from 'preact/hooks';
 
 import { ICard_Props } from '../interfaces';
-import { ContentHTML } from './ContentHTML';
-import { HeaderHTML } from './HeaderHTML';
+import { CardView } from './CardView';
+import { CardCodeMirror } from './CardCodeMirror';
+import { CardActions } from './CardActions';
 
-export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain }) => {
+export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain, cardAction }) => {
   const {
     id,
     depth,
     headerHTML,
+    headerMD,
     contentsHTML,
+    contentsMD,
     children,
     scrollChildren,
     parents,
     neighbors,
     isSelected,
+    isEdit,
     isParent,
     isChild,
     isNeighbor,
@@ -41,11 +44,13 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain }) => 
       onClick={() => showAllChain({ id, depth, children, parents, neighbors, scrollChildren })}
       ref={$divCard}
     >
-      <HeaderHTML headerHTML={headerHTML} />
+      <CardActions isSelected={isSelected} isEdit={isEdit} cardAction={cardAction} />
 
-      {contentsHTML.map((content) => {
-        return <ContentHTML contentHTML={content} key={nanoid()} />;
-      })}
+      {isEdit && isSelected ? (
+        <CardCodeMirror headerMD={headerMD} contentsMD={contentsMD} />
+      ) : (
+        <CardView header={headerHTML} contents={contentsHTML} />
+      )}
     </div>
   );
 };

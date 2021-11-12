@@ -6,34 +6,30 @@ export type id = string;
 
 export type idChains = id[];
 
-export interface IPreactState extends IStateInfo {
+export interface IPreactState extends IHeadersData {
   children: IDataChains[];
   scrollChildren: IDataChains[];
   parents: IDataChains[];
   neighbors: idChains;
   isSelected: boolean;
+  isEdit: boolean;
   isParent: boolean;
   isChild: boolean;
   isNeighbor: boolean;
   scrollElement: boolean;
 }
 
-export interface IHeadersData extends IStateInfo {
-  depth: number;
-}
-
-export interface IHeaderChains {
-  id: id;
-  depth: number;
+export interface IHeaderChains extends IDataChains {
   children: IHeaderChains[];
   parents: IDataChains[];
   neighbors: idChains;
 }
 
-export interface IStateInfo extends IDataChains {
-  id: id;
+export interface IHeadersData extends IDataChains {
   headerHTML: VirtualDom;
   contentsHTML: VirtualDom[];
+  headerMD: string;
+  contentsMD: string[];
 }
 
 export interface IDataChains {

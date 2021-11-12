@@ -1,4 +1,5 @@
-body .pane-empty,
+body,
+.pane-empty,
 .tree-edit {
   width: 100%;
   height: 100%;
@@ -26,6 +27,7 @@ body .pane-empty,
 
 .group {
   border-radius: 5px;
+  position: relative;
 }
 
 .empty-place {
@@ -36,11 +38,13 @@ body .pane-empty,
 .card {
   padding: 5px 15px;
   background: rgb(73, 73, 73);
+  position: relative;
 }
 .selected-item {
   background: rgb(165, 165, 165);
   color: #483699;
 }
+
 .chain-down {
   background: rgba(165, 165, 165, 0.63);
   color: #483699;
@@ -57,4 +61,22 @@ body .pane-empty,
 
 .chain-up:hover {
   color: #483699c0;
+}
+
+.card-btn {
+  position: absolute;
+  left: 90%;
+  width: 20px;
+  height: 20px;
+  font-size: 15px;
+  cursor: pointer;
+  z-index: 1;
+}
+.edit,
+.save {
+  top: 80%;
+}
+
+.delete:hover {
+  color: rgb(255, 57, 57);
 }

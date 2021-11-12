@@ -22,7 +22,7 @@ export const fileContents = (markdownText: string): any[] => {
   return childrenNode;
 };
 
-const astToHTML = async (ast: any): Promise<string> => {
+const astToHTML = async (ast: Root): Promise<string> => {
   const resultMD: string = remark().stringify(ast);
   const resultHTML = await unified().use(remarkParse).use(remarkHtml).process(resultMD);
   return String(resultHTML);
@@ -37,30 +37,36 @@ const initialState = async (markdownText: string) => {
       const orderLength: number = headersData.length;
 
       if (elem.type === 'heading') {
-        const objTitle: IHeadersData = {
+        const headerData: IHeadersData = {
           id: nanoid(),
           depth: elem.depth,
+          headerMD: remark().stringify(elem),
           headerHTML: converter.convert(await astToHTML(elem)),
           contentsHTML: [],
+          contentsMD: [],
         };
-        headersData.push(objTitle);
+        headersData.push(headerData);
       } else if (orderLength) {
         headersData[orderLength - 1].contentsHTML.push(converter.convert(await astToHTML(elem)));
+        headersData[orderLength - 1].contentsMD.push(remark().stringify(elem));
       }
     }
   }
 
-  headersData.forEach(({ id, depth, headerHTML, contentsHTML }) => {
+  headersData.forEach(({ id, depth, headerHTML, headerMD, contentsHTML, contentsMD }) => {
     const objState: IPreactState = {
       id,
       depth,
       headerHTML,
-      contentsHTML,
+      headerMD,
+      contentsHTML: [...contentsHTML],
+      contentsMD: [...contentsMD],
       children: [],
       scrollChildren: [],
       parents: [],
       neighbors: [],
       isSelected: false,
+      isEdit: false,
       isParent: false,
       isChild: false,
       isNeighbor: false,
@@ -120,7 +126,6 @@ const buildTree = (inputArr: IHeadersData[]) => {
 };
 
 export const readyState = async (markdownText: string) => {
-  // const initalMD: Root = remark().parse(markdownText);
   const { headersData, preactState } = await initialState(markdownText);
   const headerChains = buildTree(headersData);
 

@@ -1,8 +1,9 @@
-import { id, IDataChains, idChains, IPreactState } from './scripts/scriptInterfaces';
+import { id, IDataChains, idChains, IPreactState, VirtualDom } from './scripts/scriptInterfaces';
 
 export interface IListColumnsDepths_Props {
   cards: IPreactState[];
   showAllChain: Function;
+  cardAction: Function;
 }
 export interface IDataSelectedElem {
   id: id;
@@ -14,6 +15,23 @@ export interface IDataSelectedElem {
 }
 
 export interface ICard_Props {
-  showAllChain: Function;
   card: IPreactState;
+  showAllChain: Function;
+  cardAction: Function;
+}
+
+export interface ICardView_Props {
+  header: VirtualDom;
+  contents: VirtualDom[];
+}
+
+export interface ICardActions_Props {
+  isSelected: boolean;
+  isEdit: boolean;
+  cardAction: Function;
+}
+
+export interface ICardCodeMirror_Props {
+  headerMD: string;
+  contentsMD: string[];
 }
