@@ -28,8 +28,7 @@ export interface IHeaderChains extends IDataChains {
 export interface IHeadersData extends IDataChains {
   headerHTML: VirtualDom;
   contentsHTML: VirtualDom[];
-  headerMD: string;
-  contentsMD: string[];
+  markdownContent: string;
 }
 
 export interface IDataChains {

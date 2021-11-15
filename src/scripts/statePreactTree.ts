@@ -3,23 +3,16 @@ import { remark } from 'remark';
 import remarkHtml from 'remark-html';
 import remarkParse from 'remark-parse/lib';
 import { unified } from 'unified';
-import { visit } from 'unist-util-visit';
 import { Root } from 'remark-parse/lib';
 import { nanoid } from 'nanoid';
 import { PreactHTMLConverter } from 'preact-html-converter';
-import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains } from './scriptInterfaces';
+import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains, id } from './scriptInterfaces';
 
 const converter = PreactHTMLConverter();
 
 export const fileContents = (markdownText: string): any[] => {
   const markdown: Root = remark().parse(markdownText);
-  const childrenNode: any = [];
-
-  visit(markdown, 'root', (node): void => {
-    childrenNode.push(...node.children);
-  });
-
-  return childrenNode;
+  return [...markdown.children];
 };
 
 const astToHTML = async (ast: Root): Promise<string> => {
@@ -37,30 +30,30 @@ const initialState = async (markdownText: string) => {
       const orderLength: number = headersData.length;
 
       if (elem.type === 'heading') {
+        const headerId: id = nanoid();
+
         const headerData: IHeadersData = {
-          id: nanoid(),
+          id: headerId,
           depth: elem.depth,
-          headerMD: remark().stringify(elem),
           headerHTML: converter.convert(await astToHTML(elem)),
           contentsHTML: [],
-          contentsMD: [],
+          markdownContent: `${remark().stringify(elem)}\n`,
         };
         headersData.push(headerData);
       } else if (orderLength) {
         headersData[orderLength - 1].contentsHTML.push(converter.convert(await astToHTML(elem)));
-        headersData[orderLength - 1].contentsMD.push(remark().stringify(elem));
+        headersData[orderLength - 1].markdownContent += `${remark().stringify(elem)}\n`;
       }
     }
   }
 
-  headersData.forEach(({ id, depth, headerHTML, headerMD, contentsHTML, contentsMD }) => {
+  headersData.forEach(({ id, depth, headerHTML, contentsHTML, markdownContent }) => {
     const objState: IPreactState = {
       id,
       depth,
       headerHTML,
-      headerMD,
       contentsHTML: [...contentsHTML],
-      contentsMD: [...contentsMD],
+      markdownContent,
       children: [],
       scrollChildren: [],
       parents: [],

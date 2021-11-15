@@ -70,7 +70,7 @@ body,
   height: 20px;
   font-size: 15px;
   cursor: pointer;
-  z-index: 1;
+  z-index: 5;
 }
 .edit,
 .save {
@@ -79,4 +79,8 @@ body,
 
 .delete:hover {
   color: rgb(255, 57, 57);
+}
+
+.block-edit {
+  text-align: start;
 }

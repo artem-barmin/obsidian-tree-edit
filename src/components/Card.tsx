@@ -11,9 +11,8 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain, cardA
     id,
     depth,
     headerHTML,
-    headerMD,
     contentsHTML,
-    contentsMD,
+    markdownContent,
     children,
     scrollChildren,
     parents,
@@ -47,7 +46,7 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain, cardA
       <CardActions isSelected={isSelected} isEdit={isEdit} cardAction={cardAction} />
 
       {isEdit && isSelected ? (
-        <CardCodeMirror headerMD={headerMD} contentsMD={contentsMD} />
+        <CardCodeMirror markdownContent={markdownContent} depth={depth} />
       ) : (
         <CardView header={headerHTML} contents={contentsHTML} />
       )}

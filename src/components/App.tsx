@@ -94,6 +94,7 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
   };
 
   const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, inputState: IPreactState[][]): void => {
+    if (_.find(columsWithCards.flat(), { isEdit: true })) return;
     const code: string = e.code;
 
     if (code === 'ArrowUp' || code === 'ArrowDown') {

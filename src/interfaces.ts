@@ -32,6 +32,6 @@ export interface ICardActions_Props {
 }
 
 export interface ICardCodeMirror_Props {
-  headerMD: string;
-  contentsMD: string[];
+  markdownContent: string;
+  depth: number;
 }
