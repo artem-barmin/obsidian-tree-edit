@@ -1,100 +1,29 @@
 import { h, FunctionComponent } from 'preact';
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
+import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 
-import { readyState } from '../scripts/statePreactTree';
 import { ListColumnsDepths } from './ListColumnsDepths';
-import { id, IDataChains, IPreactState } from '../scripts/scriptInterfaces';
-import { IDataSelectedElem } from 'src/interfaces';
+import { id, IDataChains, IPreactState } from '../redux/interfacesRedux';
+import { changeFirstRender, clickCardView, createPreactState } from 'src/redux/actions';
+import { IState } from 'src/redux/interfacesRedux';
+import { IApp_Props } from 'src/interfaces';
 
-export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText }) => {
-  const [columsWithCards, setColumsWithCards] = useState<IPreactState[][]>([]);
-  const lastClickElem = useRef<IDataChains>({ id: '', depth: 0 });
+export const App: FunctionComponent<IApp_Props> = ({ markdownText, fileName }) => {
+  const { columsWithCards, lastClickElem, stateOfNavigation } = useSelector(
+    ({ stateForRender, lastClickElem, stateOfNavigation }: IState) => {
+      return { columsWithCards: stateForRender, lastClickElem, stateOfNavigation };
+    }
+  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    (async () => setColumsWithCards(await readyState(markdownText)))();
+    dispatch(createPreactState(markdownText));
   }, [markdownText]);
-
-  const showAllChain = ({
-    id: clickId,
-    depth: clickDepth,
-    children,
-    parents,
-    neighbors,
-    scrollChildren,
-  }: IDataSelectedElem): void => {
-    if (lastClickElem.current.id === clickId) return;
-    lastClickElem.current = { id: clickId, depth: clickDepth };
-
-    setColumsWithCards((prevState) => {
-      const newState: IPreactState[][] = [];
-
-      const scrollingChildren = (scrollArr: IDataChains[], clickParents: IDataChains[], clickScrolls: IDataChains[]): void => {
-        const chainPositions = (inputArr: IDataChains[], toArr: IDataChains[], scrollEl: IDataChains): void => {
-          inputArr.forEach((elem) => {
-            if (scrollEl.depth === elem.depth) {
-              toArr[toArr.indexOf(scrollEl)] = elem;
-            }
-          });
-        };
-
-        scrollArr.forEach((scroll) => {
-          if (scroll.depth === clickDepth) {
-            scrollArr[scrollArr.indexOf(scroll)] = { id: clickId, depth: clickDepth };
-          }
-
-          chainPositions(clickParents, scrollArr, scroll);
-          chainPositions(clickScrolls, scrollArr, scroll);
-        });
-      };
-
-      for (const state of prevState) {
-        for (const elem of state) {
-          if (clickId === elem.id) {
-            elem.isSelected = true;
-            elem.scrollElement = true;
-          } else {
-            elem.isSelected = false;
-            elem.isEdit = false;
-            elem.isChild = false;
-            elem.isNeighbor = false;
-            elem.isParent = false;
-            elem.scrollElement = false;
-          }
-
-          const child: IDataChains | undefined = _.find(children, { id: elem.id });
-          const scrollChild: IDataChains | undefined = _.find(scrollChildren, { id: elem.id });
-          const parent: IDataChains | undefined = _.find(parents, { id: elem.id });
-
-          if (child) elem.isChild = true;
-          if (scrollChild) elem.scrollElement = true;
-          if (parent) {
-            elem.isParent = true;
-            elem.scrollElement = true;
-            scrollingChildren(elem.scrollChildren, parents, scrollChildren);
-          }
-          if (neighbors.includes(elem.id)) elem.isNeighbor = true;
-        }
-        newState.push(state);
-      }
-
-      return newState;
-    });
-  };
-
-  const cardAction = (edit: boolean) => {
-    setColumsWithCards((prevState) =>
-      prevState.map((state) =>
-        state.map((elem) => {
-          if (elem.isSelected) elem.isEdit = edit;
-          return elem;
-        })
-      )
-    );
-  };
 
   const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, inputState: IPreactState[][]): void => {
     if (_.find(columsWithCards.flat(), { isEdit: true })) return;
+
     const code: string = e.code;
 
     if (code === 'ArrowUp' || code === 'ArrowDown') {
@@ -117,30 +46,27 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
 
         const returnedItem: IPreactState = inputState[depthIndex][currentIndex];
         const { id, depth, children, parents, neighbors, scrollChildren } = returnedItem;
-        showAllChain({ id, depth, children, parents, neighbors, scrollChildren });
+
+        dispatch(clickCardView({ id, depth, children, parents, neighbors, scrollChildren }));
       }
     } else if (code === 'ArrowLeft' || code === 'ArrowRight') {
       e.preventDefault();
 
-      const parentOrChild = (
-        parent: boolean,
-        selectedId: id = selectedElem.id,
-        state: IPreactState[][] = inputState
-      ): IDataChains | undefined => {
+      const parentOrChild = (parent: boolean, selectedId: id = selectedElem.id, state: IPreactState[][] = inputState) => {
         for (const { id, parents, scrollChildren } of state.flat()) {
           if (selectedId === id) {
             return parent ? parents[parents.length - 1] : scrollChildren[0];
           }
         }
       };
-
       const needElem = code === 'ArrowLeft' ? parentOrChild(true) : parentOrChild(false);
 
       if (needElem! && inputState[needElem.depth - 1]) {
         for (const elem of inputState[needElem.depth - 1]) {
           if (needElem.id === elem.id) {
             const { id, depth, children, parents, neighbors, scrollChildren } = elem;
-            showAllChain({ id, depth, children, parents, neighbors, scrollChildren });
+
+            dispatch(clickCardView({ id, depth, children, parents, neighbors, scrollChildren }));
           }
         }
       }
@@ -148,11 +74,9 @@ export const App: FunctionComponent<{ markdownText: string }> = ({ markdownText 
   };
 
   return (
-    <section className="tree-edit" onKeyDown={(e) => onKeyDown(e, lastClickElem.current, columsWithCards)} tabIndex={0}>
+    <section className="section-columns" onKeyDown={(e) => onKeyDown(e, lastClickElem, columsWithCards)} tabIndex={0}>
       {columsWithCards.map((depths, index: number) => {
-        return depths.length ? (
-          <ListColumnsDepths key={index} cards={depths} showAllChain={showAllChain} cardAction={cardAction} />
-        ) : null;
+        return depths.length ? <ListColumnsDepths key={index} cards={depths} /> : null;
       })}
     </section>
   );

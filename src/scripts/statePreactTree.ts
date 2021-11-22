@@ -6,7 +6,7 @@ import { unified } from 'unified';
 import { Root } from 'remark-parse/lib';
 import { nanoid } from 'nanoid';
 import { PreactHTMLConverter } from 'preact-html-converter';
-import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains, id } from './scriptInterfaces';
+import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains, INewCardContent } from '../redux/interfacesRedux';
 
 const converter = PreactHTMLConverter();
 
@@ -26,24 +26,20 @@ const initialState = async (markdownText: string) => {
   const preactState: IPreactState[][] = [];
 
   for (const elem of fileContents(markdownText)) {
-    if (elem.type !== 'thematicBreak') {
-      const orderLength: number = headersData.length;
+    const orderLength: number = headersData.length;
 
-      if (elem.type === 'heading') {
-        const headerId: id = nanoid();
-
-        const headerData: IHeadersData = {
-          id: headerId,
-          depth: elem.depth,
-          headerHTML: converter.convert(await astToHTML(elem)),
-          contentsHTML: [],
-          markdownContent: `${remark().stringify(elem)}\n`,
-        };
-        headersData.push(headerData);
-      } else if (orderLength) {
-        headersData[orderLength - 1].contentsHTML.push(converter.convert(await astToHTML(elem)));
-        headersData[orderLength - 1].markdownContent += `${remark().stringify(elem)}\n`;
-      }
+    if (elem.type === 'heading') {
+      const headerData: IHeadersData = {
+        id: nanoid(),
+        depth: elem.depth,
+        headerHTML: converter.convert(await astToHTML(elem)),
+        contentsHTML: [],
+        markdownContent: `${remark().stringify(elem)}\n`,
+      };
+      headersData.push(headerData);
+    } else if (orderLength) {
+      headersData[orderLength - 1].contentsHTML.push(converter.convert(await astToHTML(elem)));
+      headersData[orderLength - 1].markdownContent += `${remark().stringify(elem)}\n`;
     }
   }
 
@@ -159,4 +155,20 @@ export const readyState = async (markdownText: string) => {
   definingChains(headerChains, preactState);
 
   return preactState;
+};
+
+export const newCardContent = async (markdownText: string) => {
+  const result: INewCardContent = { headerHTML: [], contentsHTML: [], markdownContent: '' };
+
+  for (const elem of fileContents(markdownText)) {
+    if (elem.type === 'heading') {
+      result.headerHTML = converter.convert(await astToHTML(elem));
+      result.markdownContent = `${remark().stringify(elem)}\n`;
+    } else {
+      result.contentsHTML.push(converter.convert(await astToHTML(elem)));
+      result.markdownContent += `${remark().stringify(elem)}\n`;
+    }
+  }
+
+  return result;
 };

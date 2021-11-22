@@ -1,9 +1,18 @@
-import { id, IDataChains, idChains, IPreactState, VirtualDom } from './scripts/scriptInterfaces';
+import { TStore } from './redux/interfacesRedux';
+import { id, IDataChains, idChains, IPreactState, VirtualDom } from './redux/interfacesRedux';
+
+export interface IMainProvider_Props {
+  store: TStore;
+  markdown: string;
+}
+
+export interface IApp_Props {
+  markdownText: string;
+  fileName: string;
+}
 
 export interface IListColumnsDepths_Props {
   cards: IPreactState[];
-  showAllChain: Function;
-  cardAction: Function;
 }
 export interface IDataSelectedElem {
   id: id;
@@ -16,8 +25,6 @@ export interface IDataSelectedElem {
 
 export interface ICard_Props {
   card: IPreactState;
-  showAllChain: Function;
-  cardAction: Function;
 }
 
 export interface ICardView_Props {
@@ -28,7 +35,6 @@ export interface ICardView_Props {
 export interface ICardActions_Props {
   isSelected: boolean;
   isEdit: boolean;
-  cardAction: Function;
 }
 
 export interface ICardCodeMirror_Props {

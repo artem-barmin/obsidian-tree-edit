@@ -1,15 +1,16 @@
-import { render } from 'preact';
-import { EventRef, ItemView, Vault, Workspace, WorkspaceLeaf } from 'obsidian';
 import _ from 'lodash';
+import { EventRef, ItemView, Vault, Workspace, WorkspaceLeaf } from 'obsidian';
+
 import TreeEditSettings from './settings';
-import { App } from './components/App';
+import { preactRender } from './index';
 import { MD_VIEW_TYPE, MM_VIEW_TYPE } from './constants';
 import { fileContents } from './scripts/statePreactTree';
 
-export default class TreeeditView extends ItemView {
+export default class TreeEditView extends ItemView {
   filePath: string;
   fileName: string;
-  linkedLeaf: WorkspaceLeaf | undefined;
+  prevFileName!: string;
+  linkedLeaf?: WorkspaceLeaf;
   displayText!: string;
   currentMd!: string;
   vault: Vault;
@@ -67,7 +68,7 @@ export default class TreeeditView extends ItemView {
     }
   }
 
-  updateLinkedLeaf(group: string, mmView: TreeeditView): void {
+  updateLinkedLeaf(group: string, mmView: TreeEditView): void {
     if (group === null) {
       mmView.linkedLeaf = undefined;
       return;
@@ -81,11 +82,15 @@ export default class TreeeditView extends ItemView {
     if (this.filePath) {
       await this.readMarkDown();
 
-      const fileHeaders: any[] | undefined = _.find(fileContents(this.currentMd), { type: 'heading' });
+      if (this.fileName !== this.prevFileName) {
+        this.prevFileName = this.fileName;
 
-      !fileHeaders || this.getLeafTarget().view.getViewType() !== MD_VIEW_TYPE
-        ? this.displayEmpty(true)
-        : this.displayEmpty(false);
+        const fileHeaders: any[] | undefined = _.find(fileContents(this.currentMd), { type: 'heading' });
+
+        !fileHeaders || this.getLeafTarget().view.getViewType() !== MD_VIEW_TYPE
+          ? this.displayEmpty(true)
+          : this.displayEmpty(false);
+      }
     }
     this.displayText = this.fileName != undefined ? `Tree edit of ${this.fileName}` : 'Tree Edit';
     this.load();
@@ -102,9 +107,11 @@ export default class TreeeditView extends ItemView {
     if (this.app.workspace.activeLeaf!.view.getViewType() === MM_VIEW_TYPE) {
       return false;
     }
+
     const pathHasChanged = this.readFilePath();
     const markDownHasChanged = await this.readMarkDown();
     const updateRequired = pathHasChanged || markDownHasChanged;
+
     return updateRequired;
   }
 
@@ -123,17 +130,17 @@ export default class TreeeditView extends ItemView {
     return pathHasChanged;
   }
 
-  async displayEmpty(display: boolean): Promise<void> {
+  displayEmpty(display: boolean): void {
     if (this.emptyDiv === undefined) {
       const div: HTMLDivElement = document.createElement('div');
-      div.className = 'pane-empty';
+      div.className = 'tree-edit';
       this.containerEl.children[1].appendChild(div);
       this.emptyDiv = div;
     }
 
     if (!display) {
+      preactRender(this.emptyDiv, this.currentMd, this.fileName);
       this.emptyDiv.innerHTML = '';
-      render(<App markdownText={this.currentMd} />, this.emptyDiv);
     } else {
       this.emptyDiv.innerHTML = 'Headers not found';
     }

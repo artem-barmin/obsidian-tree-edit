@@ -1,12 +1,14 @@
 import { h, FunctionComponent } from 'preact';
-import { useRef, useState } from 'preact/hooks';
+import { useRef } from 'preact/hooks';
+import { useDispatch } from 'react-redux';
 
 import { ICard_Props } from '../interfaces';
 import { CardView } from './CardView';
-import { CardCodeMirror } from './CardCodeMirror';
+import { MemoCardCodeMirror } from './CardCodeMirror';
 import { CardActions } from './CardActions';
+import { clickCardView } from 'src/redux/actions';
 
-export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain, cardAction }) => {
+export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
   const {
     id,
     depth,
@@ -25,6 +27,7 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain, cardA
     scrollElement,
   } = card;
 
+  const dispatch = useDispatch();
   const $divCard = useRef<HTMLDivElement>(null);
   const classes: string[] = ['card'];
 
@@ -40,13 +43,13 @@ export const Card: FunctionComponent<ICard_Props> = ({ card, showAllChain, cardA
   return (
     <div
       className={classes.join(' ')}
-      onClick={() => showAllChain({ id, depth, children, parents, neighbors, scrollChildren })}
+      onClick={() => dispatch(clickCardView({ id, depth, children, parents, neighbors, scrollChildren }))}
       ref={$divCard}
     >
-      <CardActions isSelected={isSelected} isEdit={isEdit} cardAction={cardAction} />
+      <CardActions isSelected={isSelected} isEdit={isEdit} />
 
       {isEdit && isSelected ? (
-        <CardCodeMirror markdownContent={markdownContent} depth={depth} />
+        <MemoCardCodeMirror markdownContent={markdownContent} depth={depth} />
       ) : (
         <CardView header={headerHTML} contents={contentsHTML} />
       )}

@@ -1,9 +1,14 @@
 import { h, FunctionComponent } from 'preact';
 import { useEffect, useRef } from 'preact/hooks';
+import { memo } from 'preact/compat';
+import { useDispatch } from 'react-redux';
 import CodeMirror, { Editor } from 'codemirror';
-import { ICardCodeMirror_Props } from 'src/interfaces';
 
-export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownContent, depth }) => {
+import { ICardCodeMirror_Props } from 'src/interfaces';
+import { cardAction, setEditorCM } from '../redux/actions';
+
+const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownContent, depth }) => {
+  const dispatch = useDispatch();
   const $divCodeMirror = useRef<HTMLDivElement>(null);
 
   const headPos = (instance: Editor) => {
@@ -12,21 +17,47 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markd
     return { lastLine, lastLineCh };
   };
 
-  const onKeyDownMirror = (instance: Editor, e: KeyboardEvent) => {
-    const code: string = e.code;
+  const onKeyDown = async (instance: Editor, e: KeyboardEvent) => {
+    const lengthForHeader: number = 9;
+    const { line, ch } = instance.getCursor();
 
-    if (instance.isReadOnly() && code !== 'Backspace') {
+    if (e.code === 'Escape') dispatch(cardAction({ isEdit: false, newMD: '' }));
+    else if (instance.isReadOnly() && e.code !== 'Backspace') {
       instance.setOption('readOnly', false);
+    } else if (line !== 0 && ch <= lengthForHeader) {
+      const textCurrentPosition = instance.getRange({ line, ch: 0 }, { line, ch: lengthForHeader });
+      const spacesForHeader = textCurrentPosition.match(/^[ ]{1,3}$/g);
+
+      if ((spacesForHeader || ch === 0) && e.key === '#') {
+        e.preventDefault();
+      }
     }
   };
 
+  const onPaste = (instance: Editor, e: ClipboardEvent) => {
+    const paste = e.clipboardData!.getData('text');
+    let line = 1;
+    const lines: { [key: string]: string } = {};
+
+    for (const elem of paste) {
+      if (elem === '\n') line++;
+      else !lines[line] ? (lines[line] = elem) : (lines[line] += elem);
+    }
+    for (const [key, value] of Object.entries(lines)) {
+      if (value.match(/^[ ]{0,3}#{1,6}$/g)) delete lines[key];
+    }
+
+    const editedLine = Object.values(lines).join('\n');
+    if (editedLine !== paste) e.preventDefault();
+  };
+
   const onCursorActivity = (instance: Editor) => {
-    const cursorPos = instance.getCursor();
+    const { line, ch } = instance.getCursor();
     const selection = instance.getSelection();
     const firstLine = instance.getLine(0);
     const chHeader = depth + 1;
 
-    if (cursorPos.line === 0 && cursorPos.ch <= chHeader) {
+    if (line === 0 && ch <= chHeader) {
       instance.setOption('readOnly', true);
       instance.setCursor({ line: 0, ch: chHeader });
     } else if (selection.indexOf(firstLine) === 0) {
@@ -47,10 +78,15 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markd
       autofocus: true,
     });
 
+    dispatch(setEditorCM(editor));
+
     editor.on('focus', onFocus);
-    editor.on('keydown', onKeyDownMirror);
+    editor.on('keydown', onKeyDown);
     editor.on('cursorActivity', onCursorActivity);
-  }, [$divCodeMirror.current]);
+    editor.on('paste', onPaste);
+  }, [$divCodeMirror.current, markdownContent]);
 
   return <div ref={$divCodeMirror} className="block-edit"></div>;
 };
+
+export const MemoCardCodeMirror = memo(CardCodeMirror);

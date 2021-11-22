@@ -1,15 +1,12 @@
 body,
 .pane-empty,
-.tree-edit {
+.tree-edit,
+.section-columns {
   width: 100%;
   height: 100%;
 }
 
-.pane-empty {
-  padding: 15px;
-}
-
-.tree-edit {
+.section-columns {
   display: flex;
   font-weight: 600;
 }
