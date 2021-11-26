@@ -40,12 +40,16 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
     $divCard.current.scrollIntoView({ block: 'center' });
   }
 
+  const onClick = (e: MouseEvent) => {
+    const classesElem = (e.target as HTMLElement).className.split(' ');
+
+    if (!classesElem.includes('card-btn')) {
+      dispatch(clickCardView({ id, depth, children, parents, neighbors, scrollChildren }));
+    }
+  };
+
   return (
-    <div
-      className={classes.join(' ')}
-      onClick={() => dispatch(clickCardView({ id, depth, children, parents, neighbors, scrollChildren }))}
-      ref={$divCard}
-    >
+    <div className={classes.join(' ')} onClick={onClick} ref={$divCard}>
       <CardActions isSelected={isSelected} isEdit={isEdit} />
 
       {isEdit && isSelected ? (

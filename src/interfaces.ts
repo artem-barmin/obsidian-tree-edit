@@ -1,26 +1,12 @@
-import { TStore } from './redux/interfacesRedux';
-import { id, IDataChains, idChains, IPreactState, VirtualDom } from './redux/interfacesRedux';
-
-export interface IMainProvider_Props {
-  store: TStore;
-  markdown: string;
-}
+import { IPreactState, VirtualDom } from './redux/interfacesRedux';
+import TreeEditView from './treeEdit-view';
 
 export interface IApp_Props {
-  markdownText: string;
-  fileName: string;
+  plugin: TreeEditView;
 }
 
 export interface IListColumnsDepths_Props {
   cards: IPreactState[];
-}
-export interface IDataSelectedElem {
-  id: id;
-  depth: number;
-  children: IDataChains[];
-  parents: IDataChains[];
-  neighbors: idChains;
-  scrollChildren: IDataChains[];
 }
 
 export interface ICard_Props {

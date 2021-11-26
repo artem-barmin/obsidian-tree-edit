@@ -6,6 +6,7 @@ import { unified } from 'unified';
 import { Root } from 'remark-parse/lib';
 import { nanoid } from 'nanoid';
 import { PreactHTMLConverter } from 'preact-html-converter';
+
 import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains, INewCardContent } from '../redux/interfacesRedux';
 
 const converter = PreactHTMLConverter();
@@ -24,6 +25,7 @@ const astToHTML = async (ast: Root): Promise<string> => {
 const initialState = async (markdownText: string) => {
   const headersData: IHeadersData[] = [];
   const preactState: IPreactState[][] = [];
+  const stateMDContent: any[] = [];
 
   for (const elem of fileContents(markdownText)) {
     const orderLength: number = headersData.length;
@@ -41,6 +43,10 @@ const initialState = async (markdownText: string) => {
       headersData[orderLength - 1].contentsHTML.push(converter.convert(await astToHTML(elem)));
       headersData[orderLength - 1].markdownContent += `${remark().stringify(elem)}\n`;
     }
+  }
+
+  for (const { id, markdownContent } of headersData) {
+    stateMDContent.push({ id, markdownContent });
   }
 
   headersData.forEach(({ id, depth, headerHTML, contentsHTML, markdownContent }) => {
@@ -66,7 +72,7 @@ const initialState = async (markdownText: string) => {
     !currentDepth ? preactState.push([objState]) : currentDepth.push(objState);
   });
 
-  return { headersData, preactState };
+  return { headersData, stateMDContent, preactState };
 };
 
 const buildTree = (inputArr: IHeadersData[]) => {
@@ -115,7 +121,7 @@ const buildTree = (inputArr: IHeadersData[]) => {
 };
 
 export const readyState = async (markdownText: string) => {
-  const { headersData, preactState } = await initialState(markdownText);
+  const { headersData, stateMDContent, preactState } = await initialState(markdownText);
   const headerChains = buildTree(headersData);
 
   const definingChains = (inputChain: IHeaderChains[], inputState: IPreactState[][]): void => {
@@ -154,7 +160,7 @@ export const readyState = async (markdownText: string) => {
 
   definingChains(headerChains, preactState);
 
-  return preactState;
+  return { stateMDContent, preactState };
 };
 
 export const newCardContent = async (markdownText: string) => {

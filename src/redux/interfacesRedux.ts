@@ -7,10 +7,11 @@ export type id = string;
 export type idChains = id[];
 
 export interface IState {
+  stateMDContent: IStateMDContent[];
   stateForRender: IPreactState[][];
   stateOfNavigation: string;
   editorCM: CodeMirror.Editor | null;
-  lastClickElem: IDataChains;
+  lastSelectedElem: IDataChains;
 }
 
 export interface IAction {
@@ -41,6 +42,20 @@ export interface IPreactState extends IHeadersData {
   scrollElement: boolean;
 }
 
+export interface IDataSelectedElem {
+  id: id;
+  depth: number;
+  children: IDataChains[];
+  parents: IDataChains[];
+  neighbors: idChains;
+  scrollChildren: IDataChains[];
+}
+
+export interface IStateMDContent {
+  id: id;
+  markdownContent: string;
+}
+
 export interface IHeaderChains extends IDataChains {
   children: IHeaderChains[];
   parents: IDataChains[];
@@ -62,4 +77,9 @@ export interface INewCardContent {
   headerHTML: VirtualDom;
   contentsHTML: VirtualDom[];
   markdownContent: string;
+}
+
+export interface INearestNeighbor {
+  inputState: IPreactState[];
+  parentId?: id;
 }

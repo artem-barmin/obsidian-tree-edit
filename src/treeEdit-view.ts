@@ -13,10 +13,11 @@ export default class TreeEditView extends ItemView {
   linkedLeaf?: WorkspaceLeaf;
   displayText!: string;
   currentMd!: string;
+  prevCurrentMd!: string;
   vault: Vault;
   workspace: Workspace;
   listeners!: EventRef[];
-  emptyDiv!: HTMLDivElement;
+  mainDiv!: HTMLDivElement;
   isLeafPinned!: boolean;
   settings: TreeEditSettings;
 
@@ -82,8 +83,9 @@ export default class TreeEditView extends ItemView {
     if (this.filePath) {
       await this.readMarkDown();
 
-      if (this.fileName !== this.prevFileName) {
+      if (this.fileName !== this.prevFileName || this.currentMd !== this.prevCurrentMd) {
         this.prevFileName = this.fileName;
+        this.prevCurrentMd = this.currentMd;
 
         const fileHeaders: any[] | undefined = _.find(fileContents(this.currentMd), { type: 'heading' });
 
@@ -131,18 +133,18 @@ export default class TreeEditView extends ItemView {
   }
 
   displayEmpty(display: boolean): void {
-    if (this.emptyDiv === undefined) {
+    if (this.mainDiv === undefined) {
       const div: HTMLDivElement = document.createElement('div');
       div.className = 'tree-edit';
       this.containerEl.children[1].appendChild(div);
-      this.emptyDiv = div;
+      this.mainDiv = div;
     }
 
     if (!display) {
-      preactRender(this.emptyDiv, this.currentMd, this.fileName);
-      this.emptyDiv.innerHTML = '';
+      preactRender(this);
+      this.mainDiv.innerHTML = '';
     } else {
-      this.emptyDiv.innerHTML = 'Headers not found';
+      this.mainDiv.innerHTML = 'Headers not found';
     }
   }
 }

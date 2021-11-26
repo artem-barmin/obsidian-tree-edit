@@ -1,23 +1,19 @@
-import { FunctionComponent, render } from 'preact';
+import { render } from 'preact';
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
+
 import { rootReducer } from './redux/rootReducer';
 import { App } from './components/App';
-import { IMainProvider_Props } from './interfaces';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+import TreeEditView from './treeEdit-view';
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
-export const preactRender = (HTMLElem: HTMLDivElement, markdownText: string, fileName: string) => {
-  const MainProvider: FunctionComponent<IMainProvider_Props> = ({ store, markdown }) => {
-    return (
-      <>
-        <Provider store={store}>
-          <App markdownText={markdown} fileName={fileName} />
-        </Provider>
-      </>
-    );
-  };
-
-  render(<MainProvider store={store} markdown={markdownText} />, HTMLElem);
+export const preactRender = (plugin: TreeEditView) => {
+  render(
+    <Provider store={store}>
+      <App plugin={plugin} />
+    </Provider>,
+    plugin.mainDiv
+  );
 };

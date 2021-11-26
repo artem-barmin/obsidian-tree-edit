@@ -5,21 +5,29 @@ import _ from 'lodash';
 
 import { ListColumnsDepths } from './ListColumnsDepths';
 import { id, IDataChains, IPreactState } from '../redux/interfacesRedux';
-import { changeFirstRender, clickCardView, createPreactState } from 'src/redux/actions';
+import { clickCardView, createMainStates } from 'src/redux/actions';
 import { IState } from 'src/redux/interfacesRedux';
 import { IApp_Props } from 'src/interfaces';
 
-export const App: FunctionComponent<IApp_Props> = ({ markdownText, fileName }) => {
-  const { columsWithCards, lastClickElem, stateOfNavigation } = useSelector(
-    ({ stateForRender, lastClickElem, stateOfNavigation }: IState) => {
-      return { columsWithCards: stateForRender, lastClickElem, stateOfNavigation };
+export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
+  const { columsWithCards, lastSelectedElem, stateOfNavigation } = useSelector(
+    ({ stateForRender, lastSelectedElem, stateOfNavigation }: IState) => {
+      return { columsWithCards: stateForRender, lastSelectedElem, stateOfNavigation };
     }
   );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(createPreactState(markdownText));
-  }, [markdownText]);
+    dispatch(createMainStates(plugin.currentMd));
+  }, [plugin.currentMd]);
+
+  useEffect(() => {
+    if (stateOfNavigation) {
+      (async () => {
+        await plugin.app.vault.adapter.write(plugin.filePath, stateOfNavigation);
+      })();
+    }
+  }, [stateOfNavigation]);
 
   const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, inputState: IPreactState[][]): void => {
     if (_.find(columsWithCards.flat(), { isEdit: true })) return;
@@ -74,7 +82,7 @@ export const App: FunctionComponent<IApp_Props> = ({ markdownText, fileName }) =
   };
 
   return (
-    <section className="section-columns" onKeyDown={(e) => onKeyDown(e, lastClickElem, columsWithCards)} tabIndex={0}>
+    <section className="section-columns" onKeyDown={(e) => onKeyDown(e, lastSelectedElem, columsWithCards)} tabIndex={0}>
       {columsWithCards.map((depths, index: number) => {
         return depths.length ? <ListColumnsDepths key={index} cards={depths} /> : null;
       })}

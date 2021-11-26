@@ -1,13 +1,12 @@
-import { IDataSelectedElem } from 'src/interfaces';
+import { CARD_ACTION, CHANGE_FIRST_RENDER, CLICK_CARD_VIEW, CREATE_MAIN_STATES, DELETE_CARD, SET_EDITOR_CM } from './types';
 import { newCardContent, readyState } from 'src/scripts/statePreactTree';
-import { ICardAction_Args } from './interfacesRedux';
-import { CARD_ACTION, CHANGE_FIRST_RENDER, CLICK_CARD_VIEW, CREATE_PREACT_STATE, SET_EDITOR_CM } from './types';
+import { ICardAction_Args, IDataSelectedElem } from './interfacesRedux';
 
-export const createPreactState = (markdownText: string) => {
+export const createMainStates = (markdown: string) => {
   return async (dispatch: Function) => {
-    const state = await readyState(markdownText);
+    const { stateMDContent, preactState } = await readyState(markdown);
 
-    dispatch({ type: CREATE_PREACT_STATE, payload: [...state] });
+    dispatch({ type: CREATE_MAIN_STATES, payload: { stateMDContent, preactState } });
   };
 };
 
@@ -24,3 +23,4 @@ export const cardAction = (data: ICardAction_Args) => {
 export const changeFirstRender = (filename: string) => ({ type: CHANGE_FIRST_RENDER, payload: filename });
 export const clickCardView = (data: IDataSelectedElem) => ({ type: CLICK_CARD_VIEW, payload: { ...data } });
 export const setEditorCM = (editor: CodeMirror.Editor) => ({ type: SET_EDITOR_CM, payload: editor });
+export const deleteCard = () => ({ type: DELETE_CARD });
