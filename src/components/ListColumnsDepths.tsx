@@ -1,7 +1,6 @@
-import { h, FunctionComponent } from 'preact';
-
-import { Card } from './Card';
+import { FunctionComponent } from 'preact';
 import { IListColumnsDepths_Props } from '../interfaces';
+import { Card } from './Card';
 
 export const ListColumnsDepths: FunctionComponent<IListColumnsDepths_Props> = ({ cards }) => {
   return (

@@ -1,10 +1,9 @@
 import { render } from 'preact';
-import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
-
-import { rootReducer } from './redux/rootReducer';
+import thunk from 'redux-thunk';
 import { App } from './components/App';
+import { rootReducer } from './redux/reducers';
 import TreeEditView from './treeEdit-view';
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

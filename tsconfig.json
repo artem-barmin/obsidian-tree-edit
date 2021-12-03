@@ -1,21 +1,24 @@
 {
   "compilerOptions": {
+    "incremental": true,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "target": "esnext",
+    "target": "es2021",
     "inlineSourceMap": true,
     "inlineSources": true,
     "skipLibCheck": true,
     "importHelpers": true,
-    "lib": ["DOM", "DOM.Iterable", "esnext", "es6", "scripthost", "es2018" ],
+    "lib": ["DOM", "DOM.Iterable", "esnext", "es6", "scripthost", "es2018"],
     "allowJs": true,
+    "strict": true,
+    "alwaysStrict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "module": "ESNext",
     "moduleResolution": "node",
-    "strict": true
+    "forceConsistentCasingInFileNames": true
   },
-  "include": [ "src/*.ts" ]
+  "include": ["src/*.ts"]
 }

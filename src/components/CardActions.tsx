@@ -1,13 +1,12 @@
-import { h, FunctionComponent } from 'preact';
+import { FunctionComponent } from 'preact';
 import { useDispatch, useSelector } from 'react-redux';
+import { ICardActions_Props } from '../interfaces';
+import { RootReducerActions } from '../redux/actions';
+import { IState } from '../redux/interfaces';
 
-import { ICardActions_Props } from 'src/interfaces';
-import { IState } from 'src/redux/interfacesRedux';
-import { cardAction, deleteCard } from '../redux/actions';
+const { changeCard, deleteCard } = RootReducerActions;
 
-export const CardActions: FunctionComponent<ICardActions_Props> = ({ isSelected, isEdit }) => {
-  if (!isSelected) return null;
-
+export const CardActions: FunctionComponent<ICardActions_Props> = ({ isEdit, addNewCard }) => {
   const editor = useSelector((state: IState) => state.editorCM);
   const dispatch = useDispatch();
 
@@ -16,19 +15,25 @@ export const CardActions: FunctionComponent<ICardActions_Props> = ({ isSelected,
 
   return (
     <>
+      {!isEdit && (
+        <>
+          <span className="card-btn delete" title="Удалить карточку" onClick={() => dispatch(deleteCard())}>
+            ✖
+          </span>
+
+          <span className="card-btn add-card" title="Добавить дочку" onClick={() => addNewCard('right')}>
+            +
+          </span>
+        </>
+      )}
+
       <span
         className={classes.join(' ')}
         title={statusTitle}
-        onClick={() => dispatch(cardAction({ isEdit: !isEdit, newMD: editor?.getValue() }))}
+        onClick={() => dispatch(changeCard({ isEdit: !isEdit, newMD: editor?.getValue() }))}
       >
         {isEdit ? '✔' : '✎'}
       </span>
-
-      {!isEdit && (
-        <span className="card-btn delete" title="Удалить карточку" onClick={() => dispatch(deleteCard())}>
-          ✖
-        </span>
-      )}
     </>
   );
 };

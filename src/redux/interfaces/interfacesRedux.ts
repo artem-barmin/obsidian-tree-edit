@@ -83,3 +83,33 @@ export interface INearestNeighbor {
   inputState: IPreactState[];
   parentId?: id;
 }
+
+export interface ICreateCardData extends INewCardContent {
+  id: id;
+  depth: number;
+  parents?: IDataChains[];
+  neighbors?: idChains;
+}
+
+export interface IAddCard_Payload {
+  whereToAdd: string;
+  contentHTML: VirtualDom;
+  markdownContent: string;
+}
+
+export interface IAddNewCardToParents_Input {
+  inputState: IPreactState[][];
+  allParents: IDataChains[];
+  newCardId: id;
+  selectedDepth: number;
+  lastNeighborId?: id;
+}
+
+export interface IAddNewCardToNeighbors_Input {
+  inputState: IPreactState[];
+  selectedId: id;
+  newCardId: id;
+  cardIndexInDepth: number;
+  allNeighbors: idChains;
+  chainNeighbors?: IDataChains[];
+}

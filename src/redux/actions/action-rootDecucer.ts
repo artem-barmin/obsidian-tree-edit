@@ -1,6 +1,9 @@
-import { CARD_ACTION, CHANGE_FIRST_RENDER, CLICK_CARD_VIEW, CREATE_MAIN_STATES, DELETE_CARD, SET_EDITOR_CM } from './types';
-import { newCardContent, readyState } from 'src/scripts/statePreactTree';
-import { ICardAction_Args, IDataSelectedElem } from './interfacesRedux';
+import { convertASTtoData, newCardContent, readyState } from '../../scripts';
+import { ICardAction_Args, IDataSelectedElem } from '../interfaces';
+import { RootReducerTypes } from '../types/';
+
+const { ADD_CARD, CHANGE_CARD, CHANGE_FIRST_RENDER, CLICK_CARD_VIEW, CREATE_MAIN_STATES, DELETE_CARD, SET_EDITOR_CM } =
+  RootReducerTypes;
 
 export const createMainStates = (markdown: string) => {
   return async (dispatch: Function) => {
@@ -10,13 +13,21 @@ export const createMainStates = (markdown: string) => {
   };
 };
 
-export const cardAction = (data: ICardAction_Args) => {
+export const changeCard = (data: ICardAction_Args) => {
   return async (dispatch: Function) => {
     const { isEdit, newMD } = data;
 
     const newContent = !isEdit && newMD ? await newCardContent(newMD) : null;
 
-    dispatch({ type: CARD_ACTION, payload: { isEdit, newContent } });
+    dispatch({ type: CHANGE_CARD, payload: { isEdit, newContent } });
+  };
+};
+
+export const addCard = (whereToAdd: string, astHeader: any) => {
+  return async (dispatch: Function) => {
+    const { contentHTML, markdownContent } = await convertASTtoData(astHeader);
+
+    dispatch({ type: ADD_CARD, payload: { whereToAdd, contentHTML, markdownContent } });
   };
 };
 

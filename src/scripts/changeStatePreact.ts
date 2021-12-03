@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { IDataChains, IDataSelectedElem, IPreactState, IStateMDContent } from '../redux/interfacesRedux';
+import { IDataChains, IDataSelectedElem, IPreactState } from '../redux/interfaces';
 
 export const makeChainOnClick = (
   inputState: IPreactState[][],
@@ -57,12 +57,3 @@ export const makeChainOnClick = (
 
   return { lastSelectedElem: { id: selectedId, depth: selectedDepth }, newStatePreact };
 };
-
-// export const calculatingNewMarkdown = (inputState: IStateMDContent[], selectedElem) => {
-//   let result = '';
-
-//     for (const { id, markdownContent } of inputState) {
-//       if (id === lastSelectedElem.id) fullMD += result!.markdownContent;
-//       else fullMD += markdownContent;
-//     }
-// }

@@ -1,11 +1,12 @@
-import { h, FunctionComponent } from 'preact';
-import { useEffect, useRef } from 'preact/hooks';
-import { memo } from 'preact/compat';
-import { useDispatch } from 'react-redux';
 import CodeMirror, { Editor } from 'codemirror';
+import { FunctionComponent } from 'preact';
+import { memo } from 'preact/compat';
+import { useEffect, useRef } from 'preact/hooks';
+import { useDispatch } from 'react-redux';
+import { ICardCodeMirror_Props } from '../interfaces';
+import { RootReducerActions } from '../redux/actions';
 
-import { ICardCodeMirror_Props } from 'src/interfaces';
-import { cardAction, setEditorCM } from '../redux/actions';
+const { changeCard, setEditorCM } = RootReducerActions;
 
 const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownContent, depth }) => {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownCont
     const lengthForHeader: number = 9;
     const { line, ch } = instance.getCursor();
 
-    if (e.code === 'Escape') dispatch(cardAction({ isEdit: false, newMD: '' }));
+    if (e.code === 'Escape') dispatch(changeCard({ isEdit: false, newMD: '' }));
     else if (instance.isReadOnly() && e.code !== 'Backspace') {
       instance.setOption('readOnly', false);
     } else if (line !== 0 && ch <= lengthForHeader) {
@@ -73,7 +74,7 @@ const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownCont
 
   useEffect(() => {
     const editor = CodeMirror($divCodeMirror.current!, {
-      value: markdownContent.slice(0, markdownContent.length - 2),
+      value: `${markdownContent.slice(0, markdownContent.length - 2)} `,
       mode: 'markdown',
       autofocus: true,
     });

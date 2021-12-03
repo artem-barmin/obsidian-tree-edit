@@ -1,6 +1,5 @@
-import { h, FunctionComponent } from 'preact';
 import { nanoid } from 'nanoid';
-
+import { FunctionComponent } from 'preact';
 import { ICardView_Props } from '../interfaces';
 import { ContentHTML } from './ContentHTML';
 import { HeaderHTML } from './HeaderHTML';

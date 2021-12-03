@@ -16,7 +16,7 @@ body,
   overflow-y: scroll;
   scrollbar-width: none;
   text-align: center;
-  width: 33%;
+  width: 330px;
 }
 .column::-webkit-scrollbar {
   width: 0 !important;
@@ -33,9 +33,10 @@ body,
 }
 
 .card {
-  padding: 5px 15px;
+  padding: 0;
   background: rgb(73, 73, 73);
   position: relative;
+  min-height: 56px;
 }
 .selected-item {
   background: rgb(165, 165, 165);
@@ -61,17 +62,10 @@ body,
 }
 
 .card-btn {
-  position: absolute;
-  left: 90%;
   width: 20px;
   height: 20px;
-  font-size: 15px;
   cursor: pointer;
-  z-index: 5;
-}
-.edit,
-.save {
-  top: 80%;
+  z-index: 100;
 }
 
 .delete:hover {
@@ -80,4 +74,34 @@ body,
 
 .block-edit {
   text-align: start;
+}
+
+.flex-row {
+  position: absolute;
+  height: 20px;
+  width: 100%;
+}
+
+.block-buttons-bottom {
+  bottom: 0%;
+}
+
+.block-buttons-right {
+  position: absolute;
+  height: 100%;
+  width: 20px;
+  right: 0%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add-card {
+  font-size: 17px;
+  padding: 7px;
+}
+.add-card:hover {
+  background: rgb(175, 175, 175);
+  border-radius: 7px;
 }

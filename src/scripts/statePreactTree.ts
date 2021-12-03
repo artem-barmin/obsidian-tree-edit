@@ -1,25 +1,19 @@
 import _ from 'lodash';
 import { remark } from 'remark';
-import remarkHtml from 'remark-html';
-import remarkParse from 'remark-parse/lib';
-import { unified } from 'unified';
 import { Root } from 'remark-parse/lib';
-import { nanoid } from 'nanoid';
-import { PreactHTMLConverter } from 'preact-html-converter';
-
-import { IPreactState, IHeadersData, IHeaderChains, idChains, IDataChains, INewCardContent } from '../redux/interfacesRedux';
-
-const converter = PreactHTMLConverter();
+import {
+  IDataChains,
+  idChains,
+  IHeaderChains,
+  IHeadersData,
+  INewCardContent,
+  IPreactState,
+} from '../redux/interfaces/interfacesRedux';
+import { convertASTtoData, createCardData } from './createCardData';
 
 export const fileContents = (markdownText: string): any[] => {
   const markdown: Root = remark().parse(markdownText);
   return [...markdown.children];
-};
-
-const astToHTML = async (ast: Root): Promise<string> => {
-  const resultMD: string = remark().stringify(ast);
-  const resultHTML = await unified().use(remarkParse).use(remarkHtml).process(resultMD);
-  return String(resultHTML);
 };
 
 const initialState = async (markdownText: string) => {
@@ -30,18 +24,22 @@ const initialState = async (markdownText: string) => {
   for (const elem of fileContents(markdownText)) {
     const orderLength: number = headersData.length;
 
+    const { contentHTML, markdownContent } = await convertASTtoData(elem);
+
     if (elem.type === 'heading') {
       const headerData: IHeadersData = {
-        id: nanoid(),
+        // id: nanoid(),
+        id: elem.children[0].value,
         depth: elem.depth,
-        headerHTML: converter.convert(await astToHTML(elem)),
+        headerHTML: contentHTML,
         contentsHTML: [],
-        markdownContent: `${remark().stringify(elem)}\n`,
+        markdownContent,
       };
+
       headersData.push(headerData);
     } else if (orderLength) {
-      headersData[orderLength - 1].contentsHTML.push(converter.convert(await astToHTML(elem)));
-      headersData[orderLength - 1].markdownContent += `${remark().stringify(elem)}\n`;
+      headersData[orderLength - 1].contentsHTML.push(contentHTML);
+      headersData[orderLength - 1].markdownContent += markdownContent;
     }
   }
 
@@ -49,28 +47,13 @@ const initialState = async (markdownText: string) => {
     stateMDContent.push({ id, markdownContent });
   }
 
-  headersData.forEach(({ id, depth, headerHTML, contentsHTML, markdownContent }) => {
-    const objState: IPreactState = {
-      id,
-      depth,
-      headerHTML,
-      contentsHTML: [...contentsHTML],
-      markdownContent,
-      children: [],
-      scrollChildren: [],
-      parents: [],
-      neighbors: [],
-      isSelected: false,
-      isEdit: false,
-      isParent: false,
-      isChild: false,
-      isNeighbor: false,
-      scrollElement: false,
-    };
+  for (const data of headersData) {
+    const objState = createCardData(data);
 
-    const currentDepth = preactState[depth - 1];
-    !currentDepth ? preactState.push([objState]) : currentDepth.push(objState);
-  });
+    const currentDepth = preactState[data.depth - 1];
+
+    !currentDepth ? preactState.push([{ ...objState }]) : currentDepth.push({ ...objState });
+  }
 
   return { headersData, stateMDContent, preactState };
 };
@@ -167,12 +150,14 @@ export const newCardContent = async (markdownText: string) => {
   const result: INewCardContent = { headerHTML: [], contentsHTML: [], markdownContent: '' };
 
   for (const elem of fileContents(markdownText)) {
+    const { contentHTML, markdownContent } = await convertASTtoData(elem);
+
     if (elem.type === 'heading') {
-      result.headerHTML = converter.convert(await astToHTML(elem));
-      result.markdownContent = `${remark().stringify(elem)}\n`;
+      result.headerHTML = contentHTML;
+      result.markdownContent = markdownContent;
     } else {
-      result.contentsHTML.push(converter.convert(await astToHTML(elem)));
-      result.markdownContent += `${remark().stringify(elem)}\n`;
+      result.contentsHTML.push(contentHTML);
+      result.markdownContent += markdownContent;
     }
   }
 

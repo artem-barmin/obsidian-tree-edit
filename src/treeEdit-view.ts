@@ -1,10 +1,9 @@
 import _ from 'lodash';
 import { EventRef, ItemView, Vault, Workspace, WorkspaceLeaf } from 'obsidian';
-
-import TreeEditSettings from './settings';
-import { preactRender } from './index';
 import { MD_VIEW_TYPE, MM_VIEW_TYPE } from './constants';
+import { preactRender } from './index';
 import { fileContents } from './scripts/statePreactTree';
+import TreeEditSettings from './settings';
 
 export default class TreeEditView extends ItemView {
   filePath: string;

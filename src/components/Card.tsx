@@ -1,12 +1,13 @@
-import { h, FunctionComponent } from 'preact';
+import { FunctionComponent } from 'preact';
 import { useRef } from 'preact/hooks';
 import { useDispatch } from 'react-redux';
-
 import { ICard_Props } from '../interfaces';
-import { CardView } from './CardView';
+import { RootReducerActions } from '../redux/actions';
+import { CardButtons } from './CardButtons';
 import { MemoCardCodeMirror } from './CardCodeMirror';
-import { CardActions } from './CardActions';
-import { clickCardView } from 'src/redux/actions';
+import { CardView } from './CardView';
+
+const { clickCardView } = RootReducerActions;
 
 export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
   const {
@@ -50,7 +51,7 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
 
   return (
     <div className={classes.join(' ')} onClick={onClick} ref={$divCard}>
-      <CardActions isSelected={isSelected} isEdit={isEdit} />
+      <CardButtons isSelected={isSelected} isEdit={isEdit} depth={depth} />
 
       {isEdit && isSelected ? (
         <MemoCardCodeMirror markdownContent={markdownContent} depth={depth} />
