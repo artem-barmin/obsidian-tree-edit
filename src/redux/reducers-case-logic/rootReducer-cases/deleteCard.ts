@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { makeChainOnClick } from '../../../scripts';
-import { id, IDataChains, IDataSelectedElem, INearestNeighbor, IPreactState, IState } from '../../interfaces';
+import { getReadyMarkdown, makeChainOnClick } from '../../../scripts';
+import { id, IDataChains, IDataSelectedElem, INearestNeighbor, IPreactState, IStateRootReducer } from '../../interfaces';
 
-export const deleteCard = (state: IState) => {
+export const deleteCard = (state: IStateRootReducer) => {
   const { stateForRender, stateMDContent, lastSelectedElem } = state;
   const { id: selectedId, depth: selectedDepth } = lastSelectedElem;
 
@@ -18,7 +18,6 @@ export const deleteCard = (state: IState) => {
   let dataForCardView: IDataSelectedElem;
   let closestNeighbor: id = '';
   let closestParent: id = '';
-  let newMD = '';
 
   const nearestNeighbor = (
     { inputState, parentId }: INearestNeighbor,
@@ -81,17 +80,22 @@ export const deleteCard = (state: IState) => {
     })
   );
 
-  const newStateMDContent = stateMDContent.filter(({ id }) => !(id === selectedId || _.find(deleteChildren, { id })));
-
-  for (const { markdownContent } of newStateMDContent) {
-    newMD += markdownContent;
-  }
-
   const result = makeChainOnClick(filterState, dataForCardView);
 
   if (result) {
     const { newStatePreact, lastSelectedElem: lastElem } = result;
-    return { ...state, lastSelectedElem: { ...lastElem }, stateForRender: [...newStatePreact], stateOfNavigation: newMD };
+
+    const newStateMDContent = stateMDContent.filter(({ id }) => !(id === selectedId || _.find(deleteChildren, { id })));
+
+    const newMD = getReadyMarkdown(newStateMDContent);
+
+    return {
+      ...state,
+      lastSelectedElem: { ...lastElem },
+      stateForRender: [...newStatePreact],
+      stateMDContent: [...newStateMDContent],
+      stateOfNavigation: newMD,
+    };
   } else {
     return state;
   }

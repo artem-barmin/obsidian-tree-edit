@@ -5,6 +5,7 @@
 # npm
 node_modules
 package-lock.json
+tsconfig.tsbuildinfo
 
 # build
 main.js
@@ -15,4 +16,3 @@ data.json
 
 # rollup 
 .rollup.cache
-

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { nanoid } from 'nanoid';
 import { remark } from 'remark';
 import { Root } from 'remark-parse/lib';
 import {
@@ -8,6 +9,7 @@ import {
   IHeadersData,
   INewCardContent,
   IPreactState,
+  IStateMDContent,
 } from '../redux/interfaces/interfacesRedux';
 import { convertASTtoData, createCardData } from './createCardData';
 
@@ -19,7 +21,7 @@ export const fileContents = (markdownText: string): any[] => {
 const initialState = async (markdownText: string) => {
   const headersData: IHeadersData[] = [];
   const preactState: IPreactState[][] = [];
-  const stateMDContent: any[] = [];
+  const stateMDContent: IStateMDContent[] = [];
 
   for (const elem of fileContents(markdownText)) {
     const orderLength: number = headersData.length;
@@ -28,8 +30,7 @@ const initialState = async (markdownText: string) => {
 
     if (elem.type === 'heading') {
       const headerData: IHeadersData = {
-        // id: nanoid(),
-        id: elem.children[0].value,
+        id: nanoid(),
         depth: elem.depth,
         headerHTML: contentHTML,
         contentsHTML: [],

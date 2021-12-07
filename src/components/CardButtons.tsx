@@ -7,7 +7,7 @@ import { CardActions } from './CardActions';
 
 const { addCard } = RootReducerActions;
 
-export const CardButtons: FunctionComponent<ICardButtons_Props> = ({ isSelected, isEdit, depth }) => {
+export const CardButtons: FunctionComponent<ICardButtons_Props> = ({ isSelected, isEdit, depth, editorValue }) => {
   if (!isSelected) return null;
 
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ export const CardButtons: FunctionComponent<ICardButtons_Props> = ({ isSelected,
   return (
     <>
       <div className="block-buttons-right" style={{ justifyContent: !isEdit ? 'space-between' : 'flex-end' }}>
-        <CardActions isEdit={isEdit} addNewCard={addNewCard} />
+        <CardActions isEdit={isEdit} addNewCard={addNewCard} editorValue={editorValue} />
       </div>
 
       {!isEdit && (

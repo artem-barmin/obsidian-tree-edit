@@ -1,13 +1,11 @@
 import { FunctionComponent } from 'preact';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { ICardActions_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
-import { IState } from '../redux/interfaces';
 
 const { changeCard, deleteCard } = RootReducerActions;
 
-export const CardActions: FunctionComponent<ICardActions_Props> = ({ isEdit, addNewCard }) => {
-  const editor = useSelector((state: IState) => state.editorCM);
+export const CardActions: FunctionComponent<ICardActions_Props> = ({ isEdit, addNewCard, editorValue }) => {
   const dispatch = useDispatch();
 
   const statusTitle = isEdit ? 'Сохранить изменения' : 'Редактировать карточку';
@@ -30,7 +28,7 @@ export const CardActions: FunctionComponent<ICardActions_Props> = ({ isEdit, add
       <span
         className={classes.join(' ')}
         title={statusTitle}
-        onClick={() => dispatch(changeCard({ isEdit: !isEdit, newMD: editor?.getValue() }))}
+        onClick={() => dispatch(changeCard({ isEdit: !isEdit, newMD: isEdit ? editorValue : '' }))}
       >
         {isEdit ? '✔' : '✎'}
       </span>

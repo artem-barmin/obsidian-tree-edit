@@ -1,6 +1,7 @@
-import { ICardAction_Payload, IState } from '../../interfaces';
+import { getReadyMarkdown } from 'src/scripts';
+import { ICardAction_Payload, IStateRootReducer } from '../../interfaces';
 
-export const changeCard = (state: IState, { isEdit, newContent }: ICardAction_Payload) => {
+export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: ICardAction_Payload) => {
   const { stateForRender, stateMDContent, lastSelectedElem } = state;
 
   let wasChanged = false;
@@ -16,19 +17,21 @@ export const changeCard = (state: IState, { isEdit, newContent }: ICardAction_Pa
           card.markdownContent = newContent.markdownContent;
         }
       }
-      return card;
+      return { ...card };
     })
   );
 
-  if (wasChanged) {
-    let newMD = '';
+  if (wasChanged && newContent) {
+    const newStateMDContent = stateMDContent.map((card) => {
+      if (card.id === lastSelectedElem.id) {
+        card.markdownContent = newContent.markdownContent;
+      }
+      return { ...card };
+    });
 
-    for (const { id, markdownContent } of stateMDContent) {
-      if (id === lastSelectedElem.id) newMD += newContent!.markdownContent;
-      else newMD += markdownContent;
-    }
+    const newMD = getReadyMarkdown(newStateMDContent);
 
-    return { ...state, stateForRender: [...newStatePreact], stateOfNavigation: newMD };
+    return { ...state, stateForRender: [...newStatePreact], stateMDContent: [...newStateMDContent], stateOfNavigation: newMD };
   } else {
     return { ...state, stateForRender: [...newStatePreact] };
   }

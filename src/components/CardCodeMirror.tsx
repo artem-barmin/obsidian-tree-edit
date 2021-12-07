@@ -1,16 +1,15 @@
-import CodeMirror, { Editor } from 'codemirror';
+import { Editor } from 'codemirror';
 import { FunctionComponent } from 'preact';
 import { memo } from 'preact/compat';
-import { useEffect, useRef } from 'preact/hooks';
+import { UnControlled } from 'react-codemirror2';
 import { useDispatch } from 'react-redux';
 import { ICardCodeMirror_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
 
-const { changeCard, setEditorCM } = RootReducerActions;
+const { changeCard } = RootReducerActions;
 
-const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownContent, depth }) => {
+const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownContent, depth, editorValue, setEditorValue }) => {
   const dispatch = useDispatch();
-  const $divCodeMirror = useRef<HTMLDivElement>(null);
 
   const headPos = (instance: Editor) => {
     const lastLine = instance.lastLine();
@@ -22,8 +21,7 @@ const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownCont
     const lengthForHeader: number = 9;
     const { line, ch } = instance.getCursor();
 
-    if (e.code === 'Escape') dispatch(changeCard({ isEdit: false, newMD: '' }));
-    else if (instance.isReadOnly() && e.code !== 'Backspace') {
+    if (instance.isReadOnly() && e.code !== 'Backspace') {
       instance.setOption('readOnly', false);
     } else if (line !== 0 && ch <= lengthForHeader) {
       const textCurrentPosition = instance.getRange({ line, ch: 0 }, { line, ch: lengthForHeader });
@@ -72,22 +70,39 @@ const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownCont
     instance.setCursor({ line: lastLine, ch: lastLineCh });
   };
 
-  useEffect(() => {
-    const editor = CodeMirror($divCodeMirror.current!, {
-      value: `${markdownContent.slice(0, markdownContent.length - 2)} `,
-      mode: 'markdown',
-      autofocus: true,
-    });
+  const onChange = (editor: Editor, currentValue: string, setValue = setEditorValue) => {
+    if (currentValue !== editor.getValue()) {
+      setValue(editor.getValue());
+    }
+  };
 
-    dispatch(setEditorCM(editor));
-
-    editor.on('focus', onFocus);
-    editor.on('keydown', onKeyDown);
-    editor.on('cursorActivity', onCursorActivity);
-    editor.on('paste', onPaste);
-  }, [$divCodeMirror.current, markdownContent]);
-
-  return <div ref={$divCodeMirror} className="block-edit"></div>;
+  return (
+    <div className="block-edit">
+      <UnControlled
+        value={editorValue}
+        options={{
+          mode: 'markdown',
+          autofocus: true,
+          extraKeys: {
+            Esc: () => {
+              dispatch(changeCard({ isEdit: false, newMD: '' }));
+            },
+            'Shift-Enter': (instance) => {
+              dispatch(changeCard({ isEdit: false, newMD: instance.getValue() }));
+            },
+          },
+        }}
+        editorDidMount={(editor) => {
+          editor.setValue(`${markdownContent.slice(0, markdownContent.length - 2)} `);
+        }}
+        onChange={(editor) => onChange(editor, editorValue)}
+        onFocus={onFocus}
+        onKeyDown={onKeyDown}
+        onCursorActivity={onCursorActivity}
+        onPaste={onPaste}
+      />
+    </div>
+  );
 };
 
 export const MemoCardCodeMirror = memo(CardCodeMirror);

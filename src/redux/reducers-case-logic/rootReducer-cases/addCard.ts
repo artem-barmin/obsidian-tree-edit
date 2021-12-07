@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import { nanoid } from 'nanoid';
-import { createCardData, makeChainOnClick } from '../../../scripts';
+import { createCardData, getReadyMarkdown, makeChainOnClick } from '../../../scripts';
 import {
   IAddCard_Payload,
   IAddNewCardToNeighbors_Input,
   IAddNewCardToParents_Input,
   id,
   IDataSelectedElem,
-  IState,
+  IStateRootReducer,
 } from '../../interfaces';
 
 const addNewCardToNeighbors = ({
@@ -61,14 +61,15 @@ const addNewCardToParents = ({
   }
 };
 
-export const addCard = (state: IState, { whereToAdd, contentHTML, markdownContent }: IAddCard_Payload) => {
-  const { lastSelectedElem, stateForRender, stateOfNavigation, stateMDContent } = state;
+export const addCard = (state: IStateRootReducer, { whereToAdd, contentHTML, markdownContent }: IAddCard_Payload) => {
+  const { lastSelectedElem, stateForRender, stateMDContent } = state;
   const { id: selectedId, depth: selectedDepth } = lastSelectedElem;
 
   const selectedCardState = _.find(stateForRender.flat(), { id: selectedId });
   const { parents: parentsOfSelected, children: allChildren } = selectedCardState!;
 
   const newStateForRender = stateForRender.map((column) => column.map((card) => ({ ...card })));
+  const newStateMDContent = stateMDContent.map((card) => ({ ...card }));
   const newCardId = nanoid();
 
   let cardFromWhichAdd: id = '';
@@ -77,6 +78,8 @@ export const addCard = (state: IState, { whereToAdd, contentHTML, markdownConten
     const allNeighborsState = newStateForRender[selectedDepth - 1];
     const allNeighbors: id[] = _.map(allNeighborsState, 'id');
     const cardIndexInDepth = whereToAdd === 'up' ? allNeighbors.indexOf(selectedId) : allNeighbors.indexOf(selectedId) + 1;
+
+    cardFromWhichAdd = selectedId;
 
     const objState = createCardData({
       id: newCardId,
@@ -148,6 +151,7 @@ export const addCard = (state: IState, { whereToAdd, contentHTML, markdownConten
         newStateForRender.push([{ ...objState }]);
       }
 
+      cardFromWhichAdd = selectedId;
       addNewCardToParents({ inputState: newStateForRender, allParents, newCardId, selectedDepth });
     } else {
       const allNeighborsState = newStateForRender[selectedDepth];
@@ -160,6 +164,7 @@ export const addCard = (state: IState, { whereToAdd, contentHTML, markdownConten
       const lastNeighborId = chainNeighbors[chainNeighbors.length - 1].id;
       const cardIndexInDepth = allNeighbors.indexOf(lastNeighborId) + 1;
 
+      cardFromWhichAdd = lastNeighborId;
       objState.neighbors.push(..._.map(chainNeighbors, 'id'));
       allNeighborsState.splice(cardIndexInDepth, 0, { ...objState });
 
@@ -196,9 +201,21 @@ export const addCard = (state: IState, { whereToAdd, contentHTML, markdownConten
   if (result) {
     const { newStatePreact, lastSelectedElem: lastElem } = result;
 
-    console.log(stateMDContent);
+    let indexFromElement = _.findIndex(stateMDContent, { id: cardFromWhichAdd });
 
-    return { ...state, lastSelectedElem: { ...lastElem }, stateForRender: [...newStatePreact] };
+    if (whereToAdd !== 'up') indexFromElement += 1;
+
+    newStateMDContent.splice(indexFromElement, 0, { id: newCardId, markdownContent });
+
+    const newMD = getReadyMarkdown(newStateMDContent);
+
+    return {
+      ...state,
+      lastSelectedElem: { ...lastElem },
+      stateForRender: [...newStatePreact],
+      stateMDContent: [...newStateMDContent],
+      stateOfNavigation: newMD,
+    };
   } else {
     return state;
   }

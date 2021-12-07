@@ -2,8 +2,7 @@ import { convertASTtoData, newCardContent, readyState } from '../../scripts';
 import { ICardAction_Args, IDataSelectedElem } from '../interfaces';
 import { RootReducerTypes } from '../types/';
 
-const { ADD_CARD, CHANGE_CARD, CHANGE_FIRST_RENDER, CLICK_CARD_VIEW, CREATE_MAIN_STATES, DELETE_CARD, SET_EDITOR_CM } =
-  RootReducerTypes;
+const { ADD_CARD, CHANGE_CARD, CHANGE_FIRST_RENDER, CLICK_CARD_VIEW, CREATE_MAIN_STATES, DELETE_CARD } = RootReducerTypes;
 
 export const createMainStates = (markdown: string) => {
   return async (dispatch: Function) => {
@@ -33,5 +32,4 @@ export const addCard = (whereToAdd: string, astHeader: any) => {
 
 export const changeFirstRender = (filename: string) => ({ type: CHANGE_FIRST_RENDER, payload: filename });
 export const clickCardView = (data: IDataSelectedElem) => ({ type: CLICK_CARD_VIEW, payload: { ...data } });
-export const setEditorCM = (editor: CodeMirror.Editor) => ({ type: SET_EDITOR_CM, payload: editor });
 export const deleteCard = () => ({ type: DELETE_CARD });

@@ -4,17 +4,19 @@ import { useEffect } from 'preact/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { IApp_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
-import { id, IDataChains, IPreactState, IState } from '../redux/interfaces';
+import { id, IDataChains, IPreactState, IStateRootReducer } from '../redux/interfaces';
 import { ListColumnsDepths } from './ListColumnsDepths';
 
 const { createMainStates, clickCardView } = RootReducerActions;
 
 export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
-  const { columsWithCards, lastSelectedElem, stateOfNavigation } = useSelector(
-    ({ stateForRender, lastSelectedElem, stateOfNavigation }: IState) => {
-      return { columsWithCards: stateForRender, lastSelectedElem, stateOfNavigation };
-    }
-  );
+  const { columsWithCards, lastSelectedElem, stateOfNavigation } = useSelector((state: IStateRootReducer) => {
+    return {
+      columsWithCards: state.stateForRender,
+      lastSelectedElem: state.lastSelectedElem,
+      stateOfNavigation: state.stateOfNavigation,
+    };
+  });
   const dispatch = useDispatch();
 
   useEffect(() => {

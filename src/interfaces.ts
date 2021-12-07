@@ -22,14 +22,18 @@ export interface ICardButtons_Props {
   isSelected: boolean;
   isEdit: boolean;
   depth: number;
+  editorValue: string;
 }
 
 export interface ICardActions_Props {
   isEdit: boolean;
   addNewCard: Function;
+  editorValue: string;
 }
 
 export interface ICardCodeMirror_Props {
   markdownContent: string;
   depth: number;
+  editorValue: string;
+  setEditorValue: Function;
 }

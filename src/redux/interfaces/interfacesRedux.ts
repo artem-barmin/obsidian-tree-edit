@@ -1,27 +1,19 @@
 import { VNode } from 'preact';
-import { Store } from 'redux';
 
-export type TStore = Store<IState, IAction>;
 export type VirtualDom = (VNode | string)[];
 export type id = string;
 export type idChains = id[];
 
-export interface IState {
+export interface IStateRootReducer {
   stateMDContent: IStateMDContent[];
   stateForRender: IPreactState[][];
   stateOfNavigation: string;
-  editorCM: CodeMirror.Editor | null;
   lastSelectedElem: IDataChains;
-}
-
-export interface IAction {
-  type: string;
-  payload: any;
 }
 
 export interface ICardAction_Args {
   isEdit: boolean;
-  newMD: string | undefined;
+  newMD: string;
 }
 
 export interface ICardAction_Payload {

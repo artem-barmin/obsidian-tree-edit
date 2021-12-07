@@ -23,7 +23,6 @@ body,
 }
 
 .group {
-  border-radius: 5px;
   position: relative;
 }
 
@@ -33,6 +32,8 @@ body,
 }
 
 .card {
+  transform-origin: 20% 40%;
+  margin: 0;
   padding: 0;
   background: rgb(73, 73, 73);
   position: relative;
@@ -99,7 +100,6 @@ body,
 
 .add-card {
   font-size: 17px;
-  padding: 7px;
 }
 .add-card:hover {
   background: rgb(175, 175, 175);

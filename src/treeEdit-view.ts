@@ -86,7 +86,7 @@ export default class TreeEditView extends ItemView {
         this.prevFileName = this.fileName;
         this.prevCurrentMd = this.currentMd;
 
-        const fileHeaders: any[] | undefined = _.find(fileContents(this.currentMd), { type: 'heading' });
+        const fileHeaders = _.find(fileContents(this.currentMd), { type: 'heading' });
 
         !fileHeaders || this.getLeafTarget().view.getViewType() !== MD_VIEW_TYPE
           ? this.displayEmpty(true)
