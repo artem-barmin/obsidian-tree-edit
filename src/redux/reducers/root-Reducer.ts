@@ -1,9 +1,10 @@
-import { makeChainOnClick } from '../../scripts';
-import { IStateRootReducer, RootAction } from '../interfaces';
+import { makeChainOnClick } from '../scripts';
+import { RootAction } from '../actions-types/root-Reducer.actions-types';
+import { IStateRootReducer } from '../interfaces';
 import { RootReducerCases } from '../reducers-case-logic';
-import { RootReducerTypes } from '../types';
+import { RootTypes } from '../types';
 
-const { DELETE_CARD, CREATE_MAIN_STATES, CLICK_CARD_VIEW, CHANGE_FIRST_RENDER, CHANGE_CARD, ADD_CARD } = RootReducerTypes;
+const { DELETE_CARD, CREATE_MAIN_STATES, CLICK_CARD_VIEW, CHANGE_FIRST_RENDER, CHANGE_CARD, ADD_CARD } = RootTypes;
 const { addCard, changeCard, deleteCard } = RootReducerCases;
 
 const initialState: IStateRootReducer = {

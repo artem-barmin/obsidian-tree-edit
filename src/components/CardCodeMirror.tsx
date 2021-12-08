@@ -11,10 +11,22 @@ const { changeCard } = RootReducerActions;
 const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownContent, depth, editorValue, setEditorValue }) => {
   const dispatch = useDispatch();
 
+  const emptyHeader = markdownContent.length === depth + 2;
+  let readyMarkdown = markdownContent.slice(0, markdownContent.length - 2);
+
+  if (emptyHeader) {
+    readyMarkdown += ' ';
+  }
+
   const headPos = (instance: Editor) => {
     const lastLine = instance.lastLine();
     const lastLineCh = instance.getLine(lastLine).length;
     return { lastLine, lastLineCh };
+  };
+
+  const cursorAfterHeader = (instance: Editor, chHeader = depth + 1) => {
+    const { line, ch } = instance.getCursor();
+    return line === 0 && ch <= chHeader;
   };
 
   const onKeyDown = async (instance: Editor, e: KeyboardEvent) => {
@@ -30,13 +42,15 @@ const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownCont
       if ((spacesForHeader || ch === 0) && e.key === '#') {
         e.preventDefault();
       }
+    } else if (emptyHeader && cursorAfterHeader(instance) && e.code === 'Backspace') {
+      e.preventDefault();
     }
   };
 
   const onPaste = (instance: Editor, e: ClipboardEvent) => {
     const paste = e.clipboardData!.getData('text');
-    let line = 1;
     const lines: { [key: string]: string } = {};
+    let line = 1;
 
     for (const elem of paste) {
       if (elem === '\n') line++;
@@ -51,12 +65,11 @@ const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownCont
   };
 
   const onCursorActivity = (instance: Editor) => {
-    const { line, ch } = instance.getCursor();
     const selection = instance.getSelection();
     const firstLine = instance.getLine(0);
     const chHeader = depth + 1;
 
-    if (line === 0 && ch <= chHeader) {
+    if (cursorAfterHeader(instance)) {
       instance.setOption('readOnly', true);
       instance.setCursor({ line: 0, ch: chHeader });
     } else if (selection.indexOf(firstLine) === 0) {
@@ -79,7 +92,7 @@ const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownCont
   return (
     <div className="block-edit">
       <UnControlled
-        value={editorValue}
+        value={readyMarkdown}
         options={{
           mode: 'markdown',
           autofocus: true,
@@ -91,9 +104,6 @@ const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownCont
               dispatch(changeCard({ isEdit: false, newMD: instance.getValue() }));
             },
           },
-        }}
-        editorDidMount={(editor) => {
-          editor.setValue(`${markdownContent.slice(0, markdownContent.length - 2)} `);
         }}
         onChange={(editor) => onChange(editor, editorValue)}
         onFocus={onFocus}

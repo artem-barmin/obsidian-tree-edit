@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { getReadyMarkdown, makeChainOnClick } from '../../../scripts';
+import { getReadyMarkdown, makeChainOnClick } from '../../scripts';
 import { id, IDataChains, IDataSelectedElem, INearestNeighbor, IPreactState, IStateRootReducer } from '../../interfaces';
 
 export const deleteCard = (state: IStateRootReducer) => {

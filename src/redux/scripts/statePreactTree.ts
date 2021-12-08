@@ -10,7 +10,7 @@ import {
   INewCardContent,
   IPreactState,
   IStateMDContent,
-} from '../redux/interfaces/interfacesRedux';
+} from '../interfaces/';
 import { convertASTtoData, createCardData } from './createCardData';
 
 export const fileContents = (markdownText: string): any[] => {

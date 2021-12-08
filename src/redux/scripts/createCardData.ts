@@ -3,7 +3,7 @@ import { remark } from 'remark';
 import remarkHtml, { Root } from 'remark-html';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
-import { ICreateCardData, IPreactState } from '../redux/interfaces';
+import { ICreateCardData, IPreactState } from '../interfaces';
 
 const converter = PreactHTMLConverter();
 

@@ -2,7 +2,7 @@ import { FunctionComponent } from 'preact';
 import { useDispatch } from 'react-redux';
 import { ICardButtons_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
-import { createEmptyHeader, fileContents } from '../scripts';
+import { createEmptyHeader, fileContents } from '../redux/scripts';
 import { CardActions } from './CardActions';
 
 const { addCard } = RootReducerActions;

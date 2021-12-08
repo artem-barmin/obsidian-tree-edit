@@ -1,1 +1,1 @@
-export * as RootReducerTypes from './rootReducer.types';
+export * as RootTypes from './root-Reducer.types';

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { EventRef, ItemView, Vault, Workspace, WorkspaceLeaf } from 'obsidian';
 import { MD_VIEW_TYPE, MM_VIEW_TYPE } from './constants';
 import { preactRender } from './index';
-import { fileContents } from './scripts/statePreactTree';
+import { fileContents } from './redux/scripts';
 import TreeEditSettings from './settings';
 
 export default class TreeEditView extends ItemView {

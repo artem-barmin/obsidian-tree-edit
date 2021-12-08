@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { IDataChains, IDataSelectedElem, IPreactState } from '../redux/interfaces';
+import { IDataChains, IDataSelectedElem, IPreactState } from '../interfaces';
 
 export const makeChainOnClick = (
   inputState: IPreactState[][],

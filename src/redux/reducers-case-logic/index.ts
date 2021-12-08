@@ -1,1 +1,1 @@
-export * as RootReducerCases from './rootReducer-cases';
+export * as RootReducerCases from './rootReducer';

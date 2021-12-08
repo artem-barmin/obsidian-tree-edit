@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { nanoid } from 'nanoid';
-import { createCardData, getReadyMarkdown, makeChainOnClick } from '../../../scripts';
+import { createCardData, getReadyMarkdown, makeChainOnClick } from '../../scripts';
 import {
   IAddCard_Payload,
   IAddNewCardToNeighbors_Input,

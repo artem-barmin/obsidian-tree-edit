@@ -1,4 +1,4 @@
-import { getReadyMarkdown } from 'src/scripts';
+import { getReadyMarkdown } from '../../scripts';
 import { ICardAction_Payload, IStateRootReducer } from '../../interfaces';
 
 export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: ICardAction_Payload) => {

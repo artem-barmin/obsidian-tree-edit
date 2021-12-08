@@ -1,4 +1,4 @@
-import { IStateMDContent } from '../redux/interfaces';
+import { IStateMDContent } from '../interfaces';
 
 export const getReadyMarkdown = (inputStateMDContent: IStateMDContent[]) => {
   let newMarkdown = '';
