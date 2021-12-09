@@ -42,6 +42,16 @@ export default class TreeEditView extends ItemView {
   }
 
   async onOpen() {
+    const childrenLeafContent = this.leaf.view.containerEl.children;
+
+    for (const elem of childrenLeafContent) {
+      if (elem.classList.contains('view-content')) {
+        const content = elem as HTMLDivElement;
+        content.style.padding = '0';
+        content.style.overflow = 'hidden';
+      }
+    }
+
     this.registerActiveLeafUpdate();
     this.listeners = [
       this.workspace.on('resize', () => this.update()),

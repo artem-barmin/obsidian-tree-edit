@@ -7,7 +7,16 @@ import { ICreateCardData, IPreactState } from '../interfaces';
 
 const converter = PreactHTMLConverter();
 
-export const createCardData = ({ id, depth, headerHTML, contentsHTML, markdownContent, parents, neighbors }: ICreateCardData) => {
+export const createCardData = ({
+  id,
+  depth,
+  headerHTML,
+  contentsHTML,
+  markdownContent,
+  parents,
+  neighbors,
+  isEdit,
+}: ICreateCardData) => {
   const objState: IPreactState = {
     id,
     depth,
@@ -19,7 +28,7 @@ export const createCardData = ({ id, depth, headerHTML, contentsHTML, markdownCo
     parents: parents ? [...parents] : [],
     neighbors: neighbors ? [...neighbors] : [],
     isSelected: false,
-    isEdit: false,
+    isEdit: isEdit ?? false,
     isParent: false,
     isChild: false,
     isNeighbor: false,

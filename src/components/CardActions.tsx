@@ -5,7 +5,7 @@ import { RootReducerActions } from '../redux/actions';
 
 const { changeCard, deleteCard } = RootReducerActions;
 
-export const CardActions: FunctionComponent<ICardActions_Props> = ({ isEdit, addNewCard, editorValue }) => {
+export const CardActions: FunctionComponent<ICardActions_Props> = ({ isEdit, depth, addNewCard, editorValue }) => {
   const dispatch = useDispatch();
 
   const statusTitle = isEdit ? 'Сохранить изменения' : 'Редактировать карточку';
@@ -19,9 +19,11 @@ export const CardActions: FunctionComponent<ICardActions_Props> = ({ isEdit, add
             ✖
           </span>
 
-          <span className="card-btn add-card" title="Добавить дочку" onClick={() => addNewCard('right')}>
-            +
-          </span>
+          {depth < 6 && (
+            <span className="card-btn add-card" title="Добавить дочку" onClick={() => addNewCard('right')}>
+              +
+            </span>
+          )}
         </>
       )}
 

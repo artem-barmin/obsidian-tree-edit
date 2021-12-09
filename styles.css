@@ -6,17 +6,23 @@ body,
   height: 100%;
 }
 
-.section-columns {
+.tree-edit {
+  overflow-x: auto;
+  padding: 10px 20px;
+}
+
+.tree-edit > .section-columns {
   display: flex;
   font-weight: 600;
 }
 
 .column {
+  scroll-snap-type: y mandatory;
   overflow-x: hidden;
   overflow-y: scroll;
   scrollbar-width: none;
-  text-align: center;
-  width: 330px;
+  min-width: 340px;
+  width: 45%;
 }
 .column::-webkit-scrollbar {
   width: 0 !important;
@@ -39,6 +45,11 @@ body,
   position: relative;
   min-height: 56px;
 }
+
+.view {
+  padding: 0px 10px;
+}
+
 .selected-item {
   background: rgb(165, 165, 165);
   color: #483699;
@@ -75,12 +86,18 @@ body,
 
 .block-edit {
   text-align: start;
+  padding: 0 10px;
 }
 
 .flex-row {
   position: absolute;
   height: 20px;
   width: 100%;
+}
+
+.block-buttons-bottom,
+.block-buttons-top {
+  text-align: center;
 }
 
 .block-buttons-bottom {
@@ -90,7 +107,7 @@ body,
 .block-buttons-right {
   position: absolute;
   height: 100%;
-  width: 20px;
+  width: 30px;
   right: 0%;
 
   display: flex;

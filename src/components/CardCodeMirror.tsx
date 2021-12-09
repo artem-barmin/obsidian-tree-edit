@@ -1,6 +1,5 @@
 import { Editor } from 'codemirror';
 import { FunctionComponent } from 'preact';
-import { memo } from 'preact/compat';
 import { UnControlled } from 'react-codemirror2';
 import { useDispatch } from 'react-redux';
 import { ICardCodeMirror_Props } from '../interfaces';
@@ -8,7 +7,12 @@ import { RootReducerActions } from '../redux/actions';
 
 const { changeCard } = RootReducerActions;
 
-const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownContent, depth, editorValue, setEditorValue }) => {
+export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({
+  markdownContent,
+  depth,
+  editorValue,
+  setEditorValue,
+}) => {
   const dispatch = useDispatch();
 
   const emptyHeader = markdownContent.length === depth + 2;
@@ -114,5 +118,3 @@ const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({ markdownCont
     </div>
   );
 };
-
-export const MemoCardCodeMirror = memo(CardCodeMirror);

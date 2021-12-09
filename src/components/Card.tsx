@@ -1,11 +1,11 @@
 import { FunctionComponent } from 'preact';
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 import { useDispatch } from 'react-redux';
 import { ICard_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
 import { CardButtons } from './CardButtons';
-import { MemoCardCodeMirror } from './CardCodeMirror';
-import { CardView } from './CardView';
+import { CardCodeMirror } from './CardCodeMirror';
+import { MemoCardView } from './CardView';
 
 const { clickCardView } = RootReducerActions;
 
@@ -47,25 +47,24 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
     }
   };
 
-  useEffect(() => {
-    if ($divCard.current && scrollElement) {
-      $divCard.current.scrollIntoView({ block: 'center' });
-    }
-  }, [scrollElement, $divCard.current]);
-
   return (
-    <div className={classes.join(' ')} onClick={onClick} ref={$divCard}>
+    <div
+      className={classes.join(' ')}
+      onClick={onClick}
+      ref={$divCard}
+      style={{ scrollSnapAlign: scrollElement ? 'center' : 'none' }}
+    >
       <CardButtons isSelected={isSelected} isEdit={isEdit} depth={depth} editorValue={editorValue} />
 
       {isEdit && isSelected ? (
-        <MemoCardCodeMirror
+        <CardCodeMirror
           markdownContent={markdownContent}
           depth={depth}
           editorValue={editorValue}
           setEditorValue={setEditorValue}
         />
       ) : (
-        <CardView header={headerHTML} contents={contentsHTML} />
+        <MemoCardView header={headerHTML} contents={contentsHTML} />
       )}
     </div>
   );

@@ -24,7 +24,7 @@ const initialState = async (markdownText: string) => {
   const stateMDContent: IStateMDContent[] = [];
 
   for (const elem of fileContents(markdownText)) {
-    const orderLength: number = headersData.length;
+    const orderLength = headersData.length;
 
     const { contentHTML, markdownContent } = await convertASTtoData(elem);
 
@@ -70,7 +70,7 @@ const buildTree = (inputArr: IHeadersData[]) => {
 
   const buildLevel = (globalInput: IHeadersData[], parentArr?: IDataChains[]) => {
     const currentLevel: IHeaderChains[] = [];
-    let levelDepth: number = 0;
+    let levelDepth = 0;
 
     const parents = parentArr && parentArr.length ? [...parentArr] : [];
 
@@ -99,7 +99,7 @@ const buildTree = (inputArr: IHeadersData[]) => {
     return currentLevel;
   };
 
-  let globalIndex: number = 0;
+  let globalIndex = 0;
 
   return buildLevel(inputArr);
 };

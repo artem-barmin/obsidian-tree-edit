@@ -81,6 +81,7 @@ export interface ICreateCardData extends INewCardContent {
   depth: number;
   parents?: IDataChains[];
   neighbors?: idChains;
+  isEdit?: boolean;
 }
 
 export interface IAddCard_Payload {

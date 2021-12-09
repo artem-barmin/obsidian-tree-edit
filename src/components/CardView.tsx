@@ -1,10 +1,11 @@
 import { nanoid } from 'nanoid';
 import { FunctionComponent } from 'preact';
+import { memo } from 'preact/compat';
 import { ICardView_Props } from '../interfaces';
 import { ContentHTML } from './ContentHTML';
 import { HeaderHTML } from './HeaderHTML';
 
-export const CardView: FunctionComponent<ICardView_Props> = ({ header, contents }) => {
+const CardView: FunctionComponent<ICardView_Props> = ({ header, contents }) => {
   return (
     <div className="view">
       <HeaderHTML headerHTML={header} />
@@ -15,3 +16,5 @@ export const CardView: FunctionComponent<ICardView_Props> = ({ header, contents 
     </div>
   );
 };
+
+export const MemoCardView = memo(CardView);

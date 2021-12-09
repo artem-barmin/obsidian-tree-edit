@@ -1,5 +1,5 @@
-import { getReadyMarkdown } from '../../scripts';
 import { ICardAction_Payload, IStateRootReducer } from '../../interfaces';
+import { getReadyMarkdown } from '../../scripts';
 
 export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: ICardAction_Payload) => {
   const { stateForRender, stateMDContent, lastSelectedElem } = state;
@@ -12,8 +12,6 @@ export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: ICa
         card.isEdit = isEdit;
 
         if (newContent && (wasChanged = newContent.markdownContent !== card.markdownContent)) {
-          card.headerHTML = newContent.headerHTML;
-          card.contentsHTML = [...newContent.contentsHTML];
           card.markdownContent = newContent.markdownContent;
         }
       }

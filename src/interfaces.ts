@@ -27,6 +27,7 @@ export interface ICardButtons_Props {
 
 export interface ICardActions_Props {
   isEdit: boolean;
+  depth: number;
   addNewCard: Function;
   editorValue: string;
 }

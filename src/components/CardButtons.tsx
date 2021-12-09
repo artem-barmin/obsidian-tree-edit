@@ -13,8 +13,6 @@ export const CardButtons: FunctionComponent<ICardButtons_Props> = ({ isSelected,
   const dispatch = useDispatch();
 
   const addNewCard = (whereToAdd: string, currentDepth = depth) => {
-    if (currentDepth === 6) return;
-
     const newMDHeader = whereToAdd === 'right' ? createEmptyHeader(currentDepth + 1) : createEmptyHeader(currentDepth);
     const [astHeader] = fileContents(newMDHeader);
 
@@ -24,7 +22,7 @@ export const CardButtons: FunctionComponent<ICardButtons_Props> = ({ isSelected,
   return (
     <>
       <div className="block-buttons-right" style={{ justifyContent: !isEdit ? 'space-between' : 'flex-end' }}>
-        <CardActions isEdit={isEdit} addNewCard={addNewCard} editorValue={editorValue} />
+        <CardActions isEdit={isEdit} depth={depth} addNewCard={addNewCard} editorValue={editorValue} />
       </div>
 
       {!isEdit && (
