@@ -1,7 +1,7 @@
-import { ICardAction_Payload, IStateRootReducer } from '../../interfaces';
+import { IStateRootReducer, RootInterfaces } from '../../interfaces';
 import { getReadyMarkdown } from '../../scripts';
 
-export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: ICardAction_Payload) => {
+export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: RootInterfaces.IChangeCard) => {
   const { stateForRender, stateMDContent, lastSelectedElem } = state;
 
   let wasChanged = false;
@@ -11,8 +11,8 @@ export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: ICa
       if (card.isSelected) {
         card.isEdit = isEdit;
 
-        if (newContent && (wasChanged = newContent.markdownContent !== card.markdownContent)) {
-          card.markdownContent = newContent.markdownContent;
+        if (newContent && (wasChanged = newContent !== card.markdownContent)) {
+          card.markdownContent = newContent;
         }
       }
       return { ...card };
@@ -22,7 +22,7 @@ export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: ICa
   if (wasChanged && newContent) {
     const newStateMDContent = stateMDContent.map((card) => {
       if (card.id === lastSelectedElem.id) {
-        card.markdownContent = newContent.markdownContent;
+        card.markdownContent = newContent;
       }
       return { ...card };
     });

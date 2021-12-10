@@ -1,4 +1,4 @@
-import { IPreactState, VirtualDom } from './redux/interfaces/interfacesRedux';
+import { IPreactState } from './redux/interfaces/sharedInterfaces';
 import TreeEditView from './treeEdit-view';
 
 export interface IApp_Props {
@@ -14,8 +14,8 @@ export interface ICard_Props {
 }
 
 export interface ICardView_Props {
-  header: VirtualDom;
-  contents: VirtualDom[];
+  depth: number;
+  markdownContent: string;
 }
 
 export interface ICardButtons_Props {

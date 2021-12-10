@@ -2,7 +2,7 @@ import { FunctionComponent } from 'preact';
 import { useDispatch } from 'react-redux';
 import { ICardButtons_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
-import { createEmptyHeader, fileContents } from '../redux/scripts';
+import { createEmptyHeader } from '../redux/scripts';
 import { CardActions } from './CardActions';
 
 const { addCard } = RootReducerActions;
@@ -14,9 +14,8 @@ export const CardButtons: FunctionComponent<ICardButtons_Props> = ({ isSelected,
 
   const addNewCard = (whereToAdd: string, currentDepth = depth) => {
     const newMDHeader = whereToAdd === 'right' ? createEmptyHeader(currentDepth + 1) : createEmptyHeader(currentDepth);
-    const [astHeader] = fileContents(newMDHeader);
 
-    dispatch(addCard(whereToAdd, astHeader));
+    dispatch(addCard(whereToAdd, `${newMDHeader}\n\n`));
   };
 
   return (

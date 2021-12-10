@@ -30,7 +30,7 @@ export const CardActions: FunctionComponent<ICardActions_Props> = ({ isEdit, dep
       <span
         className={classes.join(' ')}
         title={statusTitle}
-        onClick={() => dispatch(changeCard({ isEdit: !isEdit, newMD: isEdit ? editorValue : '' }))}
+        onClick={() => dispatch(changeCard(!isEdit, isEdit ? editorValue : ''))}
       >
         {isEdit ? '✔' : '✎'}
       </span>

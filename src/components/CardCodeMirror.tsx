@@ -1,6 +1,6 @@
 import { Editor } from 'codemirror';
 import { FunctionComponent } from 'preact';
-import { UnControlled } from 'react-codemirror2';
+import { UnControlled as Codemirror } from 'react-codemirror2';
 import { useDispatch } from 'react-redux';
 import { ICardCodeMirror_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
@@ -82,35 +82,31 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({
     } else instance.setOption('readOnly', false);
   };
 
-  const onFocus = (instance: Editor) => {
-    const { lastLine, lastLineCh } = headPos(instance);
-    instance.setCursor({ line: lastLine, ch: lastLineCh });
-  };
-
   const onChange = (editor: Editor, currentValue: string, setValue = setEditorValue) => {
     if (currentValue !== editor.getValue()) {
-      setValue(editor.getValue());
+      setValue(`${editor.getValue()}\n\n`);
     }
   };
 
   return (
     <div className="block-edit">
-      <UnControlled
+      <Codemirror
         value={readyMarkdown}
         options={{
           mode: 'markdown',
           autofocus: true,
+          lineWrapping: true,
           extraKeys: {
             Esc: () => {
-              dispatch(changeCard({ isEdit: false, newMD: '' }));
+              dispatch(changeCard(false, ''));
             },
             'Shift-Enter': (instance) => {
-              dispatch(changeCard({ isEdit: false, newMD: instance.getValue() }));
+              const newContent = readyMarkdown !== instance.getValue() ? `${instance.getValue()}\n\n` : '';
+              dispatch(changeCard(false, newContent));
             },
           },
         }}
         onChange={(editor) => onChange(editor, editorValue)}
-        onFocus={onFocus}
         onKeyDown={onKeyDown}
         onCursorActivity={onCursorActivity}
         onPaste={onPaste}

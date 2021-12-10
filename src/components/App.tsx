@@ -1,11 +1,12 @@
 import _ from 'lodash';
+import { nanoid } from 'nanoid';
 import { FunctionComponent } from 'preact';
 import { useEffect } from 'preact/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { IApp_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
 import { id, IDataChains, IPreactState, IStateRootReducer } from '../redux/interfaces';
-import { ListColumnsDepths } from './ListColumnsDepths';
+import { ListColumnsDepths } from './ColumnDepth';
 
 const { createMainStates, clickCardView } = RootReducerActions;
 
@@ -71,7 +72,7 @@ export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
       };
       const needElem = code === 'ArrowLeft' ? parentOrChild(true) : parentOrChild(false);
 
-      if (needElem! && inputState[needElem.depth - 1]) {
+      if (needElem && inputState[needElem.depth - 1]) {
         for (const elem of inputState[needElem.depth - 1]) {
           if (needElem.id === elem.id) {
             const { id, depth, children, parents, neighbors, scrollChildren } = elem;
@@ -85,8 +86,8 @@ export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
 
   return (
     <section className="section-columns" onKeyDown={(e) => onKeyDown(e, lastSelectedElem, columsWithCards)} tabIndex={0}>
-      {columsWithCards.map((depths, index: number) => {
-        return depths.length ? <ListColumnsDepths key={index} cards={depths} /> : null;
+      {columsWithCards.map((depths) => {
+        return depths.length ? <ListColumnsDepths key={nanoid()} cards={depths} /> : null;
       })}
     </section>
   );

@@ -70,15 +70,17 @@ export const deleteCard = (state: IStateRootReducer) => {
 
   if (!dataForCardView!) return state;
 
-  const filterState = withoutDeletedCards.map((column) =>
-    column.map((card) => {
+  const filterState = withoutDeletedCards.filter((column) => {
+    if (!column.length) return false;
+
+    return column.map((card) => {
       card.children = card.children.filter(({ id }) => !(id === selectedId || _.find(deleteChildren, { id })));
       card.scrollChildren = card.scrollChildren.filter(({ id }) => !_.find(deleteChildren, { id }));
       card.neighbors = card.neighbors.filter((id) => id !== selectedId);
 
       return { ...card };
-    })
-  );
+    });
+  });
 
   const result = makeChainOnClick(filterState, dataForCardView);
 

@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact';
-import { useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { useDispatch } from 'react-redux';
 import { ICard_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
@@ -13,8 +13,6 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
   const {
     id,
     depth,
-    headerHTML,
-    contentsHTML,
     markdownContent,
     children,
     scrollChildren,
@@ -47,6 +45,12 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
     }
   };
 
+  // useEffect(() => {
+  //   if (scrollElement && $divCard) {
+  //     $divCard.current!.scrollIntoView({ block: 'center' });
+  //   }
+  // }, [$divCard, scrollElement]);
+
   return (
     <div
       className={classes.join(' ')}
@@ -64,7 +68,7 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
           setEditorValue={setEditorValue}
         />
       ) : (
-        <MemoCardView header={headerHTML} contents={contentsHTML} />
+        <MemoCardView depth={depth} markdownContent={markdownContent} />
       )}
     </div>
   );

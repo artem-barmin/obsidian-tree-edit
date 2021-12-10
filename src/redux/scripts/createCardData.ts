@@ -1,27 +1,9 @@
-import { PreactHTMLConverter } from 'preact-html-converter';
-import { remark } from 'remark';
-import remarkHtml, { Root } from 'remark-html';
-import remarkParse from 'remark-parse';
-import { unified } from 'unified';
 import { ICreateCardData, IPreactState } from '../interfaces';
 
-const converter = PreactHTMLConverter();
-
-export const createCardData = ({
-  id,
-  depth,
-  headerHTML,
-  contentsHTML,
-  markdownContent,
-  parents,
-  neighbors,
-  isEdit,
-}: ICreateCardData) => {
+export const createCardData = ({ id, depth, markdownContent, parents, neighbors, isEdit }: ICreateCardData) => {
   const objState: IPreactState = {
     id,
     depth,
-    headerHTML,
-    contentsHTML: [...contentsHTML],
     markdownContent,
     children: [],
     scrollChildren: [],
@@ -36,18 +18,6 @@ export const createCardData = ({
   };
 
   return objState;
-};
-
-export const convertASTtoData = async (ast: Root) => {
-  const resultMD: string = remark().stringify(ast);
-  const resultHTML = String(await unified().use(remarkParse).use(remarkHtml).process(resultMD));
-
-  const data = {
-    contentHTML: converter.convert(resultHTML),
-    markdownContent: `${remark().stringify(ast)}\n`,
-  };
-
-  return data;
 };
 
 export const createEmptyHeader = (depth: number) => {

@@ -9,13 +9,13 @@ export const ListColumnsDepths: FunctionComponent<IListColumnsDepths_Props> = ({
   const isSelectedCard = _.some(cards, { isSelected: true });
 
   useEffect(() => {
-    if (isSelectedCard) {
-      $divColumn.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    if ($divColumn && isSelectedCard) {
+      $divColumn.current!.scrollIntoView({ behavior: 'smooth' });
     }
   }, [$divColumn, isSelectedCard]);
 
   return (
-    <div className="column" ref={$divColumn} style={{ scrollBehavior: isSelectedCard ? 'smooth' : 'none' }}>
+    <div className="column" ref={$divColumn}>
       <div className="empty-place"></div>
       <div className="group">
         {cards.map((card) => {

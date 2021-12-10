@@ -40,9 +40,11 @@ export const makeChainOnClick = (
         card.isParent = false;
         card.scrollElement = false;
       }
+
       const child = _.find(children, { id: card.id });
       const scrollChild = _.find(scrollChildren, { id: card.id });
       const parent = _.find(parents, { id: card.id });
+
       if (child) card.isChild = true;
       if (scrollChild) card.scrollElement = true;
       if (parent) {

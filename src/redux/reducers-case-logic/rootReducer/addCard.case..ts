@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import { nanoid } from 'nanoid';
-import { createCardData, getReadyMarkdown, makeChainOnClick } from '../../scripts';
 import {
-  IAddCard_Payload,
   IAddNewCardToNeighbors_Input,
   IAddNewCardToParents_Input,
   id,
   IDataSelectedElem,
   IStateRootReducer,
+  RootInterfaces,
 } from '../../interfaces';
+import { createCardData, getReadyMarkdown, makeChainOnClick } from '../../scripts';
 
 const addNewCardToNeighbors = ({
   inputState,
@@ -61,7 +61,7 @@ const addNewCardToParents = ({
   }
 };
 
-export const addCard = (state: IStateRootReducer, { whereToAdd, contentHTML, markdownContent }: IAddCard_Payload) => {
+export const addCard = (state: IStateRootReducer, { whereToAdd, markdownContent }: RootInterfaces.IAddCard) => {
   const { lastSelectedElem, stateForRender, stateMDContent } = state;
   const { id: selectedId, depth: selectedDepth } = lastSelectedElem;
 
@@ -79,16 +79,19 @@ export const addCard = (state: IStateRootReducer, { whereToAdd, contentHTML, mar
     const allNeighbors: id[] = _.map(allNeighborsState, 'id');
     const cardIndexInDepth = whereToAdd === 'up' ? allNeighbors.indexOf(selectedId) : allNeighbors.indexOf(selectedId) + 1;
 
-    cardFromWhichAdd = selectedId;
+    if (whereToAdd === 'down' && allChildren.length) {
+      cardFromWhichAdd = allChildren[allChildren.length - 1].id;
+    } else {
+      cardFromWhichAdd = selectedId;
+    }
 
     const objState = createCardData({
       id: newCardId,
       depth: selectedDepth,
-      headerHTML: contentHTML,
-      contentsHTML: [],
       markdownContent,
       parents: [...parentsOfSelected],
       neighbors: [],
+      isEdit: true,
     });
 
     if (selectedDepth !== 1) {
@@ -119,11 +122,10 @@ export const addCard = (state: IStateRootReducer, { whereToAdd, contentHTML, mar
     const objState = createCardData({
       id: newCardId,
       depth: selectedDepth + 1,
-      headerHTML: contentHTML,
-      contentsHTML: [],
       markdownContent,
       parents: [...allParents],
       neighbors: [],
+      isEdit: true,
     });
 
     if (!allChildren.length) {

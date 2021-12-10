@@ -1,24 +1,9 @@
-import { VNode } from 'preact';
-
-export type VirtualDom = (VNode | string)[];
 export type id = string;
 export type idChains = id[];
-
-export interface IStateRootReducer {
-  stateMDContent: IStateMDContent[];
-  stateForRender: IPreactState[][];
-  stateOfNavigation: string;
-  lastSelectedElem: IDataChains;
-}
 
 export interface ICardAction_Args {
   isEdit: boolean;
   newMD: string;
-}
-
-export interface ICardAction_Payload {
-  isEdit: boolean;
-  newContent: INewCardContent | null;
 }
 
 export interface IPreactState extends IHeadersData {
@@ -55,19 +40,6 @@ export interface IHeaderChains extends IDataChains {
 }
 
 export interface IHeadersData extends IDataChains {
-  headerHTML: VirtualDom;
-  contentsHTML: VirtualDom[];
-  markdownContent: string;
-}
-
-export interface IDataChains {
-  id: id;
-  depth: number;
-}
-
-export interface INewCardContent {
-  headerHTML: VirtualDom;
-  contentsHTML: VirtualDom[];
   markdownContent: string;
 }
 
@@ -76,18 +48,13 @@ export interface INearestNeighbor {
   parentId?: id;
 }
 
-export interface ICreateCardData extends INewCardContent {
+export interface ICreateCardData {
   id: id;
   depth: number;
+  markdownContent: string;
   parents?: IDataChains[];
   neighbors?: idChains;
   isEdit?: boolean;
-}
-
-export interface IAddCard_Payload {
-  whereToAdd: string;
-  contentHTML: VirtualDom;
-  markdownContent: string;
 }
 
 export interface IAddNewCardToParents_Input {
@@ -105,4 +72,9 @@ export interface IAddNewCardToNeighbors_Input {
   cardIndexInDepth: number;
   allNeighbors: idChains;
   chainNeighbors?: IDataChains[];
+}
+
+export interface IDataChains {
+  id: id;
+  depth: number;
 }
