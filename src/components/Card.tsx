@@ -51,7 +51,6 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
       onClick={onClick}
       ref={$divCard}
       style={{ scrollSnapAlign: scrollElement ? 'center' : 'none' }}
-      name={`card-node-${id}`}
     >
       <CardButtons isSelected={isSelected} isEdit={isEdit} depth={depth} editorValue={editorValue} />
 
