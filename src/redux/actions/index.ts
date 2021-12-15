@@ -1,1 +1,1 @@
-export * as RootReducerActions from './root-Decucer.actions';
+export * as RootReducerActions from './root-reducer.actions';

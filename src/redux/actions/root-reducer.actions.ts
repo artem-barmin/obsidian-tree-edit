@@ -5,7 +5,7 @@ import {
   ClickCardView,
   CreateMainStates,
   DeleteCard,
-} from '../actions-types/root-Reducer.actions-types';
+} from '../actions-types/root-reducer.actions-types';
 import { IDataSelectedElem } from '../interfaces';
 import { readyState } from '../scripts';
 import { RootTypes } from '../types/';

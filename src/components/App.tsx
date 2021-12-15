@@ -22,7 +22,7 @@ export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
 
   useEffect(() => {
     dispatch(createMainStates(plugin.currentMd));
-  }, [plugin.currentMd]);
+  }, [plugin.currentMd, plugin.fileName]);
 
   useEffect(() => {
     if (stateOfNavigation) {

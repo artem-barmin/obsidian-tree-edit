@@ -1,4 +1,4 @@
-import { RootAction } from '../actions-types/root-Reducer.actions-types';
+import { RootAction } from '../actions-types/root-reducer.actions-types';
 import { IStateRootReducer } from '../interfaces';
 import { RootReducerCases } from '../reducers-case-logic';
 import { makeChainOnClick } from '../scripts';

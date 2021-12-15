@@ -97,10 +97,10 @@ export default class TreeEditView extends ItemView {
         this.prevCurrentMd = this.currentMd;
 
         const fileHeaders = _.find(fileContents(this.currentMd), { type: 'heading' });
+        const leafViewType = this.getLeafTarget().view.getViewType();
+        const mardownOrThreeEdit = leafViewType !== MD_VIEW_TYPE && leafViewType !== MM_VIEW_TYPE;
 
-        !fileHeaders || this.getLeafTarget().view.getViewType() !== MD_VIEW_TYPE
-          ? this.displayEmpty(true)
-          : this.displayEmpty(false);
+        !mardownOrThreeEdit && !fileHeaders ? this.displayEmpty(true) : this.displayEmpty(false);
       }
     }
     this.displayText = this.fileName != undefined ? `Tree edit of ${this.fileName}` : 'Tree Edit';

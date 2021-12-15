@@ -63,8 +63,10 @@ export default class TreeEdit extends Plugin {
     if (this.app.workspace.getLeavesOfType(MM_VIEW_TYPE).length > 0) {
       return;
     }
+
     const preview = this.app.workspace.splitActiveLeaf(this.settings.splitDirection);
     const mmPreview = new TreeEditView(this.settings, preview, fileInfo);
+
     preview.open(mmPreview);
   }
 

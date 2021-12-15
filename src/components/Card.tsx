@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact';
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 import { useDispatch } from 'react-redux';
 import { ICard_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
@@ -45,18 +45,13 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (scrollElement && $divCard) {
-  //     $divCard.current!.scrollIntoView({ block: 'center' });
-  //   }
-  // }, [$divCard, scrollElement]);
-
   return (
     <div
       className={classes.join(' ')}
       onClick={onClick}
       ref={$divCard}
       style={{ scrollSnapAlign: scrollElement ? 'center' : 'none' }}
+      name={`card-node-${id}`}
     >
       <CardButtons isSelected={isSelected} isEdit={isEdit} depth={depth} editorValue={editorValue} />
 
