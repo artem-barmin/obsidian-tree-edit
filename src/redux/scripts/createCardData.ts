@@ -30,5 +30,5 @@ export const createEmptyHeader = (depth: number) => {
   else if (depth === 5) header = '#####';
   else if (depth === 6) header = '######';
 
-  return `${header} `;
+  return header;
 };

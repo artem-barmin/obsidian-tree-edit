@@ -5,7 +5,7 @@ export interface IApp_Props {
   plugin: TreeEditView;
 }
 
-export interface IListColumnsDepths_Props {
+export interface IColumnDepth {
   cards: IPreactState[];
 }
 
