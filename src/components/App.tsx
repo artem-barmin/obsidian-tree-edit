@@ -1,36 +1,42 @@
 import _ from 'lodash';
-import { nanoid } from 'nanoid';
 import { FunctionComponent } from 'preact';
 import { useEffect } from 'preact/hooks';
 import { useDispatch, useSelector } from 'react-redux';
+import { useEmptyCard } from 'src/hooks';
 import { IApp_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
 import { id, IDataChains, IPreactState, IStateRootReducer } from '../redux/interfaces';
-import { ListColumnsDepths } from './ColumnDepth';
+import { ColumnDepth } from './ColumnDepth';
 
-const { createMainStates, clickCardView } = RootReducerActions;
+const { createMainStates, clickCardView, createEmptyCard } = RootReducerActions;
 
 export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
-  const { columsWithCards, lastSelectedElem, stateOfNavigation } = useSelector((state: IStateRootReducer) => {
+  const { columsWithCards, lastSelectedElem, stateOfNavigation, removeAllContent } = useSelector((state: IStateRootReducer) => {
     return {
       columsWithCards: state.stateForRender,
       lastSelectedElem: state.lastSelectedElem,
       stateOfNavigation: state.stateOfNavigation,
+      removeAllContent: state.removeAllContent,
     };
   });
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(createMainStates(plugin.currentMd));
-  }, [plugin.currentMd, plugin.fileName]);
+    if (plugin.headersExist) {
+      dispatch(createMainStates(plugin.currentMd));
+    } else {
+      dispatch(createEmptyCard(false));
+    }
+  }, [plugin.currentMd, plugin.fileName, plugin.headersExist]);
 
   useEffect(() => {
-    if (stateOfNavigation) {
+    if (stateOfNavigation || (!stateOfNavigation && removeAllContent)) {
       (async () => {
         await plugin.app.vault.adapter.write(plugin.filePath, stateOfNavigation);
       })();
     }
-  }, [stateOfNavigation]);
+  }, [stateOfNavigation, removeAllContent]);
 
   const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, inputState: IPreactState[][]): void => {
     if (_.find(columsWithCards.flat(), { isEdit: true })) return;
@@ -86,8 +92,8 @@ export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
 
   return (
     <section className="section-columns" onKeyDown={(e) => onKeyDown(e, lastSelectedElem, columsWithCards)} tabIndex={0}>
-      {columsWithCards.map((depths) => {
-        return depths.length ? <ListColumnsDepths key={nanoid()} cards={depths} /> : null;
+      {columsWithCards.map((depths, index: number) => {
+        return <ColumnDepth key={index} cards={depths} />;
       })}
     </section>
   );

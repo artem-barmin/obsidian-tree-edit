@@ -4,6 +4,7 @@ import { UnControlled as Codemirror } from 'react-codemirror2';
 import { useDispatch } from 'react-redux';
 import { ICardCodeMirror_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
+import { emptyHeader } from '../scripts';
 
 const { changeCard } = RootReducerActions;
 
@@ -15,12 +16,8 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const emptyHeader = markdownContent.length === depth + 2;
-  let readyMarkdown = markdownContent.slice(0, markdownContent.length - 2);
-
-  if (emptyHeader) {
-    readyMarkdown += ' ';
-  }
+  const isEmptyHeader = emptyHeader(markdownContent, depth);
+  const readyMarkdown = isEmptyHeader || markdownContent.slice(0, markdownContent.length - 2);
 
   const headPos = (instance: Editor) => {
     const lastLine = instance.lastLine();
@@ -46,8 +43,15 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({
       if ((spacesForHeader || ch === 0) && e.key === '#') {
         e.preventDefault();
       }
-    } else if (emptyHeader && cursorAfterHeader(instance) && e.code === 'Backspace') {
+    } else if (isEmptyHeader && cursorAfterHeader(instance) && e.code === 'Backspace') {
       e.preventDefault();
+    } else if (e.ctrlKey && e.code === 'Backspace') {
+      const textCurrentPosition = instance.getRange({ line, ch: 0 }, { line, ch: lengthForHeader });
+      const spacesForHeader = textCurrentPosition.match(/^#{1,6}[ ]+$/g);
+
+      if (spacesForHeader || (line === 0 && ch === depth + 1)) {
+        e.preventDefault();
+      }
     }
   };
 
@@ -57,8 +61,11 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({
     let line = 1;
 
     for (const elem of paste) {
-      if (elem === '\n') line++;
-      else !lines[line] ? (lines[line] = elem) : (lines[line] += elem);
+      if (elem === '\n') {
+        line++;
+      } else {
+        !lines[line] ? (lines[line] = elem) : (lines[line] += elem);
+      }
     }
     for (const [key, value] of Object.entries(lines)) {
       if (value.match(/^[ ]{0,3}#{1,6}$/g)) delete lines[key];
@@ -79,12 +86,17 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({
     } else if (selection.indexOf(firstLine) === 0) {
       const { lastLine, lastLineCh } = headPos(instance);
       instance.setSelection({ line: 0, ch: chHeader }, { line: lastLine, ch: lastLineCh });
-    } else instance.setOption('readOnly', false);
+    } else {
+      instance.setOption('readOnly', false);
+    }
   };
 
   const onChange = (editor: Editor, currentValue: string, setValue = setEditorValue) => {
     if (currentValue !== editor.getValue()) {
-      setValue(`${editor.getValue()}\n\n`);
+      const isEmpty = emptyHeader(editor.getValue());
+      const resultValue = isEmpty ? isEmpty.replaceAll(' ', '') : editor.getValue();
+
+      setValue(`${resultValue}\n\n`);
     }
   };
 
@@ -100,9 +112,8 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({
             Esc: () => {
               dispatch(changeCard(false, ''));
             },
-            'Shift-Enter': (instance) => {
-              const newContent = readyMarkdown !== instance.getValue() ? `${instance.getValue()}\n\n` : '';
-              dispatch(changeCard(false, newContent));
+            'Shift-Enter': () => {
+              dispatch(changeCard(false, editorValue));
             },
           },
         }}

@@ -14,6 +14,15 @@
   border-radius: 0.3em;
 }
 
+.tree-edit h1,
+.tree-edit h2,
+.tree-edit h3,
+.tree-edit h4,
+.tree-edit h5,
+.tree-edit h6 {
+  font-size: 18px;
+}
+
 .section-columns {
   display: flex;
   padding: 10px 20px;
@@ -23,10 +32,10 @@
 }
 
 .column {
-  scroll-snap-type: y mandatory;
-  scroll-snap-align: center;
   overflow-x: hidden;
   overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-snap-align: center;
   scrollbar-width: none;
   min-width: 340px;
   width: 45%;

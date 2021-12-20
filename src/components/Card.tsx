@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact';
-import { useRef, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { useDispatch } from 'react-redux';
 import { ICard_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
@@ -27,7 +27,6 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
   } = card;
 
   const dispatch = useDispatch();
-  const $divCard = useRef<HTMLDivElement>(null);
   const [editorValue, setEditorValue] = useState<string>('');
 
   const classes = ['card'];
@@ -46,12 +45,7 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
   };
 
   return (
-    <div
-      className={classes.join(' ')}
-      onClick={onClick}
-      ref={$divCard}
-      style={{ scrollSnapAlign: scrollElement ? 'center' : 'none' }}
-    >
+    <div className={classes.join(' ')} onClick={onClick} style={{ scrollSnapAlign: scrollElement ? 'center' : 'none' }}>
       <CardButtons isSelected={isSelected} isEdit={isEdit} depth={depth} editorValue={editorValue} />
 
       {isEdit && isSelected ? (

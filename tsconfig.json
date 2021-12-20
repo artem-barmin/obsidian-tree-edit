@@ -10,7 +10,7 @@
     "inlineSources": true,
     "skipLibCheck": true,
     "importHelpers": true,
-    "lib": ["DOM", "DOM.Iterable", "esnext", "es6", "scripthost", "es2018"],
+    "lib": ["DOM", "DOM.Iterable", "esnext", "es6", "scripthost", "es2018", "ES2021.String"],
     "allowJs": true,
     "strict": true,
     "alwaysStrict": true,

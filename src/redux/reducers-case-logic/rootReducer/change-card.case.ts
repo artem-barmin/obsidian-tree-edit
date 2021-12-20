@@ -2,7 +2,7 @@ import { IStateRootReducer, RootInterfaces } from '../../interfaces';
 import { getReadyMarkdown } from '../../scripts';
 
 export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: RootInterfaces.IChangeCard) => {
-  const { stateForRender, stateMDContent, lastSelectedElem } = state;
+  const { stateForRender, stateMDContent, lastSelectedElem, stateOfNavigation } = state;
 
   let wasChanged = false;
 
@@ -30,6 +30,10 @@ export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: Roo
     const newMD = getReadyMarkdown(newStateMDContent);
 
     return { ...state, stateForRender: [...newStatePreact], stateMDContent: [...newStateMDContent], stateOfNavigation: newMD };
+  } else if (!stateOfNavigation && !isEdit) {
+    const newMD = stateMDContent[0].markdownContent;
+
+    return { ...state, stateForRender: [...newStatePreact], stateOfNavigation: newMD };
   } else {
     return { ...state, stateForRender: [...newStatePreact] };
   }

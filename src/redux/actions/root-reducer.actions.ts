@@ -3,12 +3,14 @@ import {
   ChangeCard,
   ChangeFirstRender,
   ClickCardView,
+  CreateEmptyCard,
   CreateMainStates,
   DeleteCard,
 } from '../actions-types/root-reducer.actions-types';
 import { IDataSelectedElem } from '../interfaces';
 import { readyState } from '../scripts';
 import { RootTypes } from '../types/';
+import { CREATE_EMPTY_CARD } from '../types/root-reducer.types';
 
 const { ADD_CARD, CHANGE_CARD, CHANGE_FIRST_RENDER, CLICK_CARD_VIEW, CREATE_MAIN_STATES, DELETE_CARD } = RootTypes;
 
@@ -21,6 +23,11 @@ export const createMainStates = (markdown: string) => {
     dispatch({ type: CREATE_MAIN_STATES, payload: { stateMDContent, preactState } });
   };
 };
+
+export const createEmptyCard = (removeContent: boolean): CreateEmptyCard => ({
+  type: CREATE_EMPTY_CARD,
+  payload: removeContent,
+});
 
 export const changeFirstRender = (filename: string): ChangeFirstRender => ({
   type: CHANGE_FIRST_RENDER,

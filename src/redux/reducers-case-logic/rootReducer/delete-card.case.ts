@@ -6,12 +6,6 @@ export const deleteCard = (state: IStateRootReducer) => {
   const { stateForRender, stateMDContent, lastSelectedElem } = state;
   const { id: selectedId, depth: selectedDepth } = lastSelectedElem;
 
-  const lastChainOfCards = selectedDepth === 1 && stateForRender[0].length === 1;
-
-  if (lastChainOfCards) {
-    return state;
-  }
-
   const allNeighborsState = stateForRender[selectedDepth - 1];
   const allNeighbors = _.map(allNeighborsState, 'id');
   const deleteChildren: IDataChains[] = [];
