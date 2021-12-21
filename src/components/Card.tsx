@@ -44,8 +44,14 @@ export const Card: FunctionComponent<ICard_Props> = ({ card }) => {
     }
   };
 
+  const refCallback = (ref: HTMLDivElement | null) => {
+    if (ref && scrollElement) {
+      ref.scrollIntoView({ block: 'center' });
+    }
+  };
+
   return (
-    <div className={classes.join(' ')} onClick={onClick} style={{ scrollSnapAlign: scrollElement ? 'center' : 'none' }}>
+    <div ref={refCallback} className={classes.join(' ')} onClick={onClick}>
       <CardButtons isSelected={isSelected} isEdit={isEdit} depth={depth} editorValue={editorValue} />
 
       {isEdit && isSelected ? (
