@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import { ICreateCardData, IPreactState } from '../interfaces';
 
 export const createCardData = ({ id, depth, markdownContent, parents, neighbors, isSelected, isEdit }: ICreateCardData) => {
