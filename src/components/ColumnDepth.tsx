@@ -1,13 +1,12 @@
 import _ from 'lodash';
 import { FunctionComponent } from 'preact';
 import { useEffect, useRef } from 'preact/hooks';
-import { IColumnDepth } from '../interfaces';
+import { IColumnDepth_Props } from '../interfaces';
 import { Card } from './Card';
 
-export const ColumnDepth: FunctionComponent<IColumnDepth> = ({ cards }) => {
+export const ColumnDepth: FunctionComponent<IColumnDepth_Props> = ({ cards }) => {
   const $divColumn = useRef<HTMLDivElement>(null);
   const isSelectedCard = _.some(cards, { isSelected: true });
-  const currentDepth = _.map(cards, 'depth')[0];
 
   useEffect(() => {
     if ($divColumn.current && isSelectedCard) {
@@ -16,7 +15,7 @@ export const ColumnDepth: FunctionComponent<IColumnDepth> = ({ cards }) => {
   }, [$divColumn, isSelectedCard]);
 
   return (
-    <div className="column" id={`column-depth-${currentDepth}`} ref={$divColumn}>
+    <div className="column" ref={$divColumn}>
       <div className="empty-place"></div>
       <div className="group">
         {cards.map((card) => {

@@ -14,6 +14,15 @@
   border-radius: 0.3em;
 }
 
+.tree-edit h1,
+.tree-edit h2,
+.tree-edit h3,
+.tree-edit h4,
+.tree-edit h5,
+.tree-edit h6 {
+  font-size: 18px;
+}
+
 .section-columns {
   display: flex;
   padding: 10px 20px;
@@ -53,11 +62,13 @@
 }
 
 .view {
-  padding: 10px 30px 10px 10px;
+  word-wrap: break-word;
+  padding: 10px 30px 10px 13px;
 }
 
-.block-edit {
-  margin: 0px 30px 0px 10px;
+.react-codemirror {
+  margin: 0;
+  padding: 0;
 }
 
 .selected-item {
@@ -72,15 +83,6 @@
 .chain-up {
   background: rgba(128, 128, 128, 0.329);
   color: #675b9c;
-}
-
-.no-active:hover,
-.chain-up:hover {
-  background: rgba(146, 146, 146, 0.5);
-}
-
-.chain-up:hover {
-  color: #483699c0;
 }
 
 .flex-row .card-btn {
@@ -122,8 +124,6 @@
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .block-buttons-right .card-btn {
@@ -133,6 +133,24 @@
 
 .add-card {
   font-size: 17px;
+}
+
+.save {
+  color: rgb(34, 158, 34);
+}
+
+.add-card:hover {
+  background: rgb(116, 116, 116);
+  border-radius: 7px;
+}
+
+.chain-up:hover {
+  color: #483699c0;
+}
+
+.no-active:hover,
+.chain-up:hover {
+  background: rgba(146, 146, 146, 0.5);
 }
 
 .edit:hover,
@@ -146,13 +164,4 @@
 
 .edit:hover {
   color: rgb(255, 113, 57);
-}
-
-.save {
-  color: rgb(34, 158, 34);
-}
-
-.add-card:hover {
-  background: rgb(116, 116, 116);
-  border-radius: 7px;
 }

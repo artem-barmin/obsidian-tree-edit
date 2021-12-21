@@ -13,6 +13,7 @@ export default class TreeEditView extends ItemView {
   displayText!: string;
   currentMd!: string;
   prevCurrentMd!: string;
+  headersExist!: boolean;
   vault: Vault;
   workspace: Workspace;
   listeners!: EventRef[];
@@ -149,11 +150,8 @@ export default class TreeEditView extends ItemView {
       this.mainDiv = div;
     }
 
-    if (!display) {
-      preactRender(this);
-      this.mainDiv.innerHTML = '';
-    } else {
-      this.mainDiv.innerHTML = 'Headers not found';
-    }
+    this.headersExist = !display;
+
+    preactRender(this);
   }
 }

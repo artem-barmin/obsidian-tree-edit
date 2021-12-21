@@ -54,6 +54,7 @@ export interface ICreateCardData {
   markdownContent: string;
   parents?: IDataChains[];
   neighbors?: idChains;
+  isSelected?: boolean;
   isEdit?: boolean;
 }
 

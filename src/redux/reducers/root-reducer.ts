@@ -1,13 +1,14 @@
 import { RootAction } from '../actions-types/root-reducer.actions-types';
 import { IStateRootReducer } from '../interfaces';
 import { RootReducerCases } from '../reducers-case-logic';
-import { makeChainOnClick } from '../scripts';
 import { RootTypes } from '../types';
 
-const { DELETE_CARD, CREATE_MAIN_STATES, CLICK_CARD_VIEW, CHANGE_FIRST_RENDER, CHANGE_CARD, ADD_CARD } = RootTypes;
-const { addCard, changeCard, deleteCard } = RootReducerCases;
+const { DELETE_CARD, CREATE_MAIN_STATES, CLICK_CARD_VIEW, CHANGE_FIRST_RENDER, CHANGE_CARD, ADD_CARD, CREATE_EMPTY_CARD } =
+  RootTypes;
+const { createMainStates, clickCardView, addCard, changeCard, deleteCard, createEmptyCard } = RootReducerCases;
 
 const initialState: IStateRootReducer = {
+  removeAllContent: false,
   stateMDContent: [],
   stateForRender: [],
   stateOfNavigation: '',
@@ -16,25 +17,14 @@ const initialState: IStateRootReducer = {
 
 export const rootReducer = (state = initialState, action: RootAction) => {
   switch (action.type) {
+    case CREATE_EMPTY_CARD:
+      return createEmptyCard(state, action.payload!);
     case CHANGE_FIRST_RENDER:
       return { ...state, stateOfNavigation: action.payload! };
     case CREATE_MAIN_STATES:
-      const { stateMDContent, preactState } = action.payload!;
-      return {
-        ...state,
-        stateForRender: [...preactState],
-        stateMDContent: [...stateMDContent],
-        lastSelectedElem: { ...{ id: '', depth: 0 } },
-        stateOfNavigation: '',
-      };
+      return createMainStates(state, action.payload!);
     case CLICK_CARD_VIEW:
-      const result = makeChainOnClick(state.stateForRender, action.payload!, state.lastSelectedElem);
-
-      if (!result) return state;
-
-      const { newStatePreact, lastSelectedElem } = result;
-
-      return { ...state, lastSelectedElem: { ...lastSelectedElem }, stateForRender: [...newStatePreact] };
+      return clickCardView(state, action.payload!);
     case ADD_CARD:
       return addCard(state, action.payload!);
     case CHANGE_CARD:

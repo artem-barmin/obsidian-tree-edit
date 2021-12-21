@@ -5,9 +5,9 @@ import { ICardView_Props } from '../interfaces';
 import { emptyHeader } from '../scripts';
 
 const CardView: FunctionComponent<ICardView_Props> = ({ depth, markdownContent }) => {
-  const isEmpty = emptyHeader(markdownContent, depth);
+  const isEmptyHeader = emptyHeader(markdownContent, depth);
 
-  return <div className="view">{!isEmpty ? <Markdown>{markdownContent}</Markdown> : ''}</div>;
+  return <div className="view">{!isEmptyHeader ? <Markdown>{markdownContent}</Markdown> : ''}</div>;
 };
 
 export const MemoCardView = memo(CardView);

@@ -5,7 +5,7 @@ export interface IApp_Props {
   plugin: TreeEditView;
 }
 
-export interface IColumnDepth {
+export interface IColumnDepth_Props {
   cards: IPreactState[];
 }
 
@@ -25,7 +25,7 @@ export interface ICardButtons_Props {
   editorValue: string;
 }
 
-export interface ICardActions_Props {
+export interface IButtonsRight_Props {
   isEdit: boolean;
   depth: number;
   addNewCard: Function;

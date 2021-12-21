@@ -16,8 +16,8 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const isEmpty = emptyHeader(markdownContent, depth);
-  const readyMarkdown = isEmpty || markdownContent.slice(0, markdownContent.length - 2);
+  const isEmptyHeader = emptyHeader(markdownContent, depth);
+  const readyMarkdown = isEmptyHeader || markdownContent.slice(0, markdownContent.length - 2);
 
   const headPos = (instance: Editor) => {
     const lastLine = instance.lastLine();
@@ -43,7 +43,7 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({
       if ((spacesForHeader || ch === 0) && e.key === '#') {
         e.preventDefault();
       }
-    } else if (isEmpty && cursorAfterHeader(instance) && e.code === 'Backspace') {
+    } else if (isEmptyHeader && cursorAfterHeader(instance) && e.code === 'Backspace') {
       e.preventDefault();
     } else if (e.ctrlKey && e.code === 'Backspace') {
       const textCurrentPosition = instance.getRange({ line, ch: 0 }, { line, ch: lengthForHeader });
@@ -110,6 +110,9 @@ export const CardCodeMirror: FunctionComponent<ICardCodeMirror_Props> = ({
           lineWrapping: true,
           extraKeys: {
             Esc: () => {
+              if (readyMarkdown !== editorValue) {
+                setEditorValue(`${readyMarkdown}\n\n`);
+              }
               dispatch(changeCard(false, ''));
             },
             'Shift-Enter': () => {

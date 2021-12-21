@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { ICardButtons_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
 import { createEmptyHeader } from '../redux/scripts';
-import { CardActions } from './CardActions';
+import { ButtonsRight } from './ButtonsRight';
 
 const { addCard } = RootReducerActions;
 
@@ -20,9 +20,7 @@ export const CardButtons: FunctionComponent<ICardButtons_Props> = ({ isSelected,
 
   return (
     <>
-      <div className="block-buttons-right" style={{ justifyContent: !isEdit ? 'space-between' : 'flex-end' }}>
-        <CardActions isEdit={isEdit} depth={depth} addNewCard={addNewCard} editorValue={editorValue} />
-      </div>
+      <ButtonsRight isEdit={isEdit} depth={depth} addNewCard={addNewCard} editorValue={editorValue} />
 
       {!isEdit && (
         <>

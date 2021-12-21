@@ -7,29 +7,35 @@ import { RootReducerActions } from '../redux/actions';
 import { id, IDataChains, IPreactState, IStateRootReducer } from '../redux/interfaces';
 import { ColumnDepth } from './ColumnDepth';
 
-const { createMainStates, clickCardView } = RootReducerActions;
+const { createMainStates, clickCardView, createEmptyCard } = RootReducerActions;
 
 export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
-  const { columsWithCards, lastSelectedElem, stateOfNavigation } = useSelector((state: IStateRootReducer) => {
+  const { columsWithCards, lastSelectedElem, stateOfNavigation, removeAllContent } = useSelector((state: IStateRootReducer) => {
     return {
       columsWithCards: state.stateForRender,
       lastSelectedElem: state.lastSelectedElem,
       stateOfNavigation: state.stateOfNavigation,
+      removeAllContent: state.removeAllContent,
     };
   });
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(createMainStates(plugin.currentMd));
-  }, [plugin.currentMd, plugin.fileName]);
+    if (plugin.headersExist) {
+      dispatch(createMainStates(plugin.currentMd));
+    } else {
+      dispatch(createEmptyCard(false));
+    }
+  }, [plugin.currentMd, plugin.fileName, plugin.headersExist]);
 
   useEffect(() => {
-    if (stateOfNavigation) {
+    if (stateOfNavigation || (!stateOfNavigation && removeAllContent)) {
       (async () => {
         await plugin.app.vault.adapter.write(plugin.filePath, stateOfNavigation);
       })();
     }
-  }, [stateOfNavigation]);
+  }, [stateOfNavigation, removeAllContent]);
 
   const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, inputState: IPreactState[][]): void => {
     if (_.find(columsWithCards.flat(), { isEdit: true })) return;

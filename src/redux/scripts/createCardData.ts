@@ -1,6 +1,7 @@
+import { nanoid } from 'nanoid';
 import { ICreateCardData, IPreactState } from '../interfaces';
 
-export const createCardData = ({ id, depth, markdownContent, parents, neighbors, isEdit }: ICreateCardData) => {
+export const createCardData = ({ id, depth, markdownContent, parents, neighbors, isSelected, isEdit }: ICreateCardData) => {
   const objState: IPreactState = {
     id,
     depth,
@@ -9,12 +10,12 @@ export const createCardData = ({ id, depth, markdownContent, parents, neighbors,
     scrollChildren: [],
     parents: parents ? [...parents] : [],
     neighbors: neighbors ? [...neighbors] : [],
-    isSelected: false,
+    isSelected: isSelected ?? false,
     isEdit: isEdit ?? false,
     isParent: false,
     isChild: false,
     isNeighbor: false,
-    scrollElement: false,
+    scrollElement: isSelected ?? false,
   };
 
   return objState;
