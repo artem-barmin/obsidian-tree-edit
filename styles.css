@@ -12,6 +12,12 @@
   padding: 1em;
   margin: 0.5em 0;
   border-radius: 0.3em;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.chain-down pre {
+  background: rgba(94, 94, 94, 0.932);
 }
 
 .tree-edit h1,

@@ -38,7 +38,7 @@ export const ButtonsRight: FunctionComponent<IButtonsRight_Props> = ({ isEdit, d
               className="card-btn add-card"
               title="Добавить дочку"
               onClick={() => addNewCard('right')}
-              style={{ marginTop: 'auto', alignSelf: 'center' }}
+              style={isEmptyCard ? { marginTop: 'auto', alignSelf: 'center' } : {}}
             >
               +
             </span>
