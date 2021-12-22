@@ -8,5 +8,6 @@ export const createMainStates = (state: IStateRootReducer, { preactState, stateM
     stateMDContent: [...stateMDContent],
     lastSelectedElem: { ...{ id: '', depth: 0 } },
     stateOfNavigation: getReadyMarkdown(stateMDContent),
+    changedFromInterface: false,
   };
 };

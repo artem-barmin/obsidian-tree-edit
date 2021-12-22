@@ -29,11 +29,17 @@ export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: Roo
 
     const newMD = getReadyMarkdown(newStateMDContent);
 
-    return { ...state, stateForRender: [...newStatePreact], stateMDContent: [...newStateMDContent], stateOfNavigation: newMD };
+    return {
+      ...state,
+      stateForRender: [...newStatePreact],
+      stateMDContent: [...newStateMDContent],
+      stateOfNavigation: newMD,
+      changedFromInterface: !isEdit,
+    };
   } else if (!stateOfNavigation && !isEdit) {
     const newMD = stateMDContent[0].markdownContent;
 
-    return { ...state, stateForRender: [...newStatePreact], stateOfNavigation: newMD };
+    return { ...state, stateForRender: [...newStatePreact], stateOfNavigation: newMD, changedFromInterface: true };
   } else {
     return { ...state, stateForRender: [...newStatePreact] };
   }

@@ -8,6 +8,7 @@ const { DELETE_CARD, CREATE_MAIN_STATES, CLICK_CARD_VIEW, CHANGE_FIRST_RENDER, C
 const { createMainStates, clickCardView, addCard, changeCard, deleteCard, createEmptyCard } = RootReducerCases;
 
 const initialState: IStateRootReducer = {
+  changedFromInterface: false,
   removeAllContent: false,
   stateMDContent: [],
   stateForRender: [],

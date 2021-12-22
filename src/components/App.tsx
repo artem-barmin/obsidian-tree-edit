@@ -10,14 +10,17 @@ import { ColumnDepth } from './ColumnDepth';
 const { createMainStates, clickCardView, createEmptyCard } = RootReducerActions;
 
 export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
-  const { columsWithCards, lastSelectedElem, stateOfNavigation, removeAllContent } = useSelector((state: IStateRootReducer) => {
-    return {
-      columsWithCards: state.stateForRender,
-      lastSelectedElem: state.lastSelectedElem,
-      stateOfNavigation: state.stateOfNavigation,
-      removeAllContent: state.removeAllContent,
-    };
-  });
+  const { columsWithCards, lastSelectedElem, stateOfNavigation, removeAllContent, changedFromInterface } = useSelector(
+    (state: IStateRootReducer) => {
+      return {
+        columsWithCards: state.stateForRender,
+        lastSelectedElem: state.lastSelectedElem,
+        stateOfNavigation: state.stateOfNavigation,
+        removeAllContent: state.removeAllContent,
+        changedFromInterface: state.changedFromInterface,
+      };
+    }
+  );
 
   const dispatch = useDispatch();
 
@@ -27,15 +30,17 @@ export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
     } else {
       dispatch(createEmptyCard(false));
     }
-  }, [plugin.currentMd, plugin.fileName, plugin.headersExist]);
+  }, [plugin.currentMd, plugin.headersExist]);
 
   useEffect(() => {
-    if (stateOfNavigation || (!stateOfNavigation && removeAllContent)) {
+    const removeContent = !stateOfNavigation && removeAllContent;
+
+    if ((stateOfNavigation || removeContent) && changedFromInterface) {
       (async () => {
         await plugin.app.vault.adapter.write(plugin.filePath, stateOfNavigation);
       })();
     }
-  }, [stateOfNavigation, removeAllContent]);
+  }, [changedFromInterface, stateOfNavigation, removeAllContent, plugin.filePath, plugin.app.vault.adapter, plugin.prevFileName]);
 
   const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, inputState: IPreactState[][]): void => {
     if (_.find(columsWithCards.flat(), { isEdit: true })) return;

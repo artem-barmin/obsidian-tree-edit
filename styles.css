@@ -31,6 +31,8 @@
 .tree-edit h4,
 .tree-edit h5,
 .tree-edit h6 {
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
   font-size: 18px;
 }
 

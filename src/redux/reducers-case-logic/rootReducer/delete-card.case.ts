@@ -91,6 +91,7 @@ export const deleteCard = (state: IStateRootReducer) => {
       stateForRender: [...newStatePreact],
       stateMDContent: [...newStateMDContent],
       stateOfNavigation: newMD,
+      changedFromInterface: true,
     };
   } else {
     return state;
