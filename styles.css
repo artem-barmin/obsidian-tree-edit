@@ -16,6 +16,11 @@
   word-wrap: break-word;
 }
 
+.tree-edit ol,
+.tree-edit ul {
+  padding-inline-start: 18px;
+}
+
 .chain-down pre {
   background: rgba(94, 94, 94, 0.932);
 }
@@ -34,10 +39,11 @@
   padding: 10px 20px;
   font-weight: 600;
   overflow-x: auto;
-  scroll-snap-type: none;
 }
 
 .column {
+  scroll-snap-type: y mandatory;
+  scroll-snap-align: center;
   overflow-x: hidden;
   overflow-y: scroll;
   scrollbar-width: none;
