@@ -40,7 +40,7 @@ export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
         await plugin.app.vault.adapter.write(plugin.filePath, stateOfNavigation);
       })();
     }
-  }, [changedFromInterface, stateOfNavigation, removeAllContent, plugin.filePath, plugin.app.vault.adapter, plugin.prevFileName]);
+  }, [changedFromInterface, stateOfNavigation, removeAllContent, plugin.filePath, plugin.app.vault.adapter]);
 
   const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, inputState: IPreactState[][]): void => {
     if (_.find(columsWithCards.flat(), { isEdit: true })) return;
