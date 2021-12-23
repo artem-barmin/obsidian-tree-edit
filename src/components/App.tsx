@@ -5,18 +5,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IApp_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';
 import { id, IDataChains, IPreactState, IStateRootReducer } from '../redux/interfaces';
+import { overwriteMarkdown } from '../scripts';
 import { ColumnDepth } from './ColumnDepth';
 
 const { createMainStates, clickCardView, createEmptyCard } = RootReducerActions;
 
 export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
-  const { columsWithCards, lastSelectedElem, stateOfNavigation, removeAllContent, changedFromInterface } = useSelector(
+  const { columsWithCards, lastSelectedElem, stateOfNavigation, changedFromInterface } = useSelector(
     (state: IStateRootReducer) => {
       return {
         columsWithCards: state.stateForRender,
         lastSelectedElem: state.lastSelectedElem,
         stateOfNavigation: state.stateOfNavigation,
-        removeAllContent: state.removeAllContent,
         changedFromInterface: state.changedFromInterface,
       };
     }
@@ -33,14 +33,12 @@ export const App: FunctionComponent<IApp_Props> = ({ plugin }) => {
   }, [plugin.currentMd, plugin.headersExist]);
 
   useEffect(() => {
-    const removeContent = !stateOfNavigation && removeAllContent;
-
-    if ((stateOfNavigation || removeContent) && changedFromInterface) {
+    if (changedFromInterface) {
       (async () => {
-        await plugin.app.vault.adapter.write(plugin.filePath, stateOfNavigation);
+        await overwriteMarkdown(plugin, stateOfNavigation);
       })();
     }
-  }, [changedFromInterface, stateOfNavigation, removeAllContent, plugin.filePath, plugin.app.vault.adapter]);
+  }, [changedFromInterface, stateOfNavigation, overwriteMarkdown]);
 
   const onKeyDown = (e: KeyboardEvent, selectedElem: IDataChains, inputState: IPreactState[][]): void => {
     if (_.find(columsWithCards.flat(), { isEdit: true })) return;

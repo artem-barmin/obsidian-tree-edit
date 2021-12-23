@@ -14,6 +14,6 @@ export const createEmptyCard = (state: IStateRootReducer, removeContent: boolean
     stateMDContent: Array.from([{ ...cardData }]),
     lastSelectedElem: { ...{ id: headerId, depth: 1 } },
     stateOfNavigation: '',
-    removeAllContent: removeContent,
+    changedFromInterface: removeContent,
   };
 };

@@ -9,7 +9,6 @@ const { createMainStates, clickCardView, addCard, changeCard, deleteCard, create
 
 const initialState: IStateRootReducer = {
   changedFromInterface: false,
-  removeAllContent: false,
   stateMDContent: [],
   stateForRender: [],
   stateOfNavigation: '',
