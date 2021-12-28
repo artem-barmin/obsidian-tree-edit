@@ -1,6 +1,6 @@
 import { Editor } from 'codemirror';
 import { FunctionComponent } from 'preact';
-import { UnControlled as Codemirror } from 'react-codemirror2';
+import { UnControlled as Codemirror } from 'react-codemirror2-react-17';
 import { useDispatch } from 'react-redux';
 import { ICardCodeMirror_Props } from '../interfaces';
 import { RootReducerActions } from '../redux/actions';

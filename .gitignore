@@ -8,7 +8,6 @@ package-lock.json
 tsconfig.tsbuildinfo
 
 # build
-main.js
 *.js.map
 
 # obsidian
