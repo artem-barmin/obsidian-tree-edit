@@ -7,6 +7,7 @@ import {
   IPreactState,
 } from '../interfaces';
 import { makeChainOnClick } from './changeStatePreact';
+import { copiedStateForRender, copiedStateMDContent } from './deepCopyStates';
 import { getReadyMarkdown } from './getReadyMarkdown';
 
 export const createNewCardStates = ({
@@ -17,8 +18,8 @@ export const createNewCardStates = ({
   cardFromWhichAdd,
   markdownContent,
 }: ICreateNewCardStates_Input) => {
-  const newStateForRender = stateForRender.map((column) => column.map((card) => ({ ...card })));
-  const newStateMDContent = stateMDContent.map((card) => ({ ...card }));
+  const newStateForRender = copiedStateForRender(stateForRender);
+  const newStateMDContent = copiedStateMDContent(stateMDContent);
 
   const readyCardState = _.find(newStateForRender.flat(), { id: newCardId }) as IPreactState;
 

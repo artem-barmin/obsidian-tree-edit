@@ -9,13 +9,13 @@ export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: Roo
   const newStatePreact = stateForRender.map((column) =>
     column.map((card) => {
       if (card.isSelected) {
-        card.isEdit = isEdit;
+        const contentChanged = newContent && newContent !== card.markdownContent;
 
-        if (newContent && newContent !== card.markdownContent) {
-          wasChanged = true;
-          card.markdownContent = newContent;
-        }
+        if (contentChanged) wasChanged = true;
+
+        return { ...card, isEdit, markdownContent: contentChanged ? newContent : card.markdownContent };
       }
+
       return { ...card };
     })
   );
@@ -23,8 +23,9 @@ export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: Roo
   if (wasChanged && newContent) {
     const newStateMDContent = stateMDContent.map((card) => {
       if (card.id === lastSelectedElem.id) {
-        card.markdownContent = newContent;
+        return { ...card, markdownContent: newContent };
       }
+
       return { ...card };
     });
 

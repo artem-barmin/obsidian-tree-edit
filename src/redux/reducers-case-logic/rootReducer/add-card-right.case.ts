@@ -1,7 +1,13 @@
 import _ from 'lodash';
 import { nanoid } from 'nanoid';
-import { IAddCardToParents_Input, IAddToStateRight, IPreactState, IStateRootReducer, RootInterfaces } from '../../interfaces';
-import { addCardToNeighbors, createCardData, createNewCardStates } from '../../scripts';
+import {
+  IAddCardToParents_Input,
+  IAddToStateRight_Input,
+  IPreactState,
+  IStateRootReducer,
+  RootInterfaces,
+} from '../../interfaces';
+import { addCardToNeighbors, copiedStateForRender, createCardData, createNewCardStates } from '../../scripts';
 
 const addCardToParents = ({ inputState, allParents, newCardId, selectedDepth, lastNeighborId }: IAddCardToParents_Input) => {
   for (const { id, children, scrollChildren } of inputState.flat()) {
@@ -18,9 +24,9 @@ const addCardToParents = ({ inputState, allParents, newCardId, selectedDepth, la
   }
 };
 
-const addCardToState = ({ inputState, lastSelectedElem, allChildren, cardState, allParents }: IAddToStateRight) => {
+const addCardToState = ({ inputState, lastSelectedElem, allChildren, cardState, allParents }: IAddToStateRight_Input) => {
   const { id: selectedId, depth: selectedDepth } = lastSelectedElem;
-  const newStateForRender = inputState.map((column) => column.map((card) => ({ ...card })));
+  const newStateForRender = copiedStateForRender(inputState);
   const newCardId = cardState.id;
 
   let cardFromWhichAdd = '';
@@ -38,14 +44,14 @@ const addCardToState = ({ inputState, lastSelectedElem, allChildren, cardState, 
 
         if (children.length) {
           const neighbors = _.filter(children, { depth: selectedDepth + 1 });
-          const lastNeighborId = neighbors[neighbors.length - 1].id;
+          const lastNeighborId = _.last(neighbors)!.id;
 
           lastNeighborIndex = _.findIndex(allNeighbors, { id: lastNeighborId }) + 1;
           break;
         }
       }
 
-      newStateForRender[selectedDepth].splice(lastNeighborIndex, 0, { ...cardState });
+      allNeighbors.splice(lastNeighborIndex, 0, { ...cardState });
     } else {
       newStateForRender.push([{ ...cardState }]);
     }
@@ -61,7 +67,7 @@ const addCardToState = ({ inputState, lastSelectedElem, allChildren, cardState, 
     const { children: chainChildren } = closestParent!;
     const chainNeighbors = _.filter(chainChildren, { depth: selectedDepth + 1 });
 
-    const lastNeighborId = chainNeighbors[chainNeighbors.length - 1].id;
+    const lastNeighborId = _.last(chainNeighbors)!.id;
     const cardIndexInDepth = allNeighbors.indexOf(lastNeighborId) + 1;
 
     cardFromWhichAdd = lastNeighborId;

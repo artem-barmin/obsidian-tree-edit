@@ -89,7 +89,7 @@ export interface IAddToStateVertically_Input extends IAddCardTo {
   whereToAdd: string;
 }
 
-export interface IAddToStateRight extends IAddCardTo {
+export interface IAddToStateRight_Input extends IAddCardTo {
   allChildren: IDataChains[];
   allParents: IDataChains[];
 }

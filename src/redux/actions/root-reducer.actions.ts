@@ -41,7 +41,7 @@ export const clickCardView = (data: IDataSelectedElem): ClickCardView => ({
 });
 
 export const addCardRight = (whereToAdd: string, markdownContent: string): AddCardRight => ({
-  type: RootTypes.ADD_CARD,
+  type: RootTypes.ADD_CARD_RIGHT,
   payload: { whereToAdd, markdownContent },
 });
 

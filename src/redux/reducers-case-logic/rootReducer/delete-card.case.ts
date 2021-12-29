@@ -9,6 +9,7 @@ export const deleteCard = (state: IStateRootReducer) => {
   const allNeighborsState = stateForRender[selectedDepth - 1];
   const allNeighbors = _.map(allNeighborsState, 'id');
   const deleteChildren: IDataChains[] = [];
+
   let dataForCardView: IDataSelectedElem;
   let closestNeighbor: id = '';
   let closestParent: id = '';
@@ -62,21 +63,20 @@ export const deleteCard = (state: IStateRootReducer) => {
     })
   );
 
-  if (!dataForCardView!) return state;
-
-  const filterState = withoutDeletedCards.filter((column) => {
-    if (!column.length) return false;
-
+  const noMentionsInChain = withoutDeletedCards.map((column) => {
     return column.map((card) => {
-      card.children = card.children.filter(({ id }) => !(id === selectedId || _.find(deleteChildren, { id })));
-      card.scrollChildren = card.scrollChildren.filter(({ id }) => !_.find(deleteChildren, { id }));
-      card.neighbors = card.neighbors.filter((id) => id !== selectedId);
-
-      return { ...card };
+      return {
+        ...card,
+        children: card.children.filter(({ id }) => !(id === selectedId || _.find(deleteChildren, { id }))),
+        scrollChildren: card.scrollChildren.filter(({ id }) => !(id === selectedId || _.find(deleteChildren, { id }))),
+        neighbors: card.neighbors.filter((id) => id !== selectedId),
+      };
     });
   });
 
-  const result = makeChainOnClick(filterState, dataForCardView);
+  const noEmptyColumns = noMentionsInChain.filter((column) => column.length);
+
+  const result = makeChainOnClick(noEmptyColumns, dataForCardView!);
 
   if (result) {
     const { newStatePreact, lastSelectedElem: lastElem } = result;

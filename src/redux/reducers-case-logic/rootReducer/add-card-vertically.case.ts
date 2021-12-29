@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { nanoid } from 'nanoid';
 import { IAddToStateVertically_Input, id, IDataChains, IPreactState, IStateRootReducer, RootInterfaces } from '../../interfaces';
-import { addCardToNeighbors, createCardData, createNewCardStates } from '../../scripts';
+import { addCardToNeighbors, copiedStateForRender, createCardData, createNewCardStates } from '../../scripts';
 
 const addCardToState = ({
   inputState,
@@ -12,7 +12,7 @@ const addCardToState = ({
 }: IAddToStateVertically_Input) => {
   const { id: selectedId, depth: selectedDepth } = lastSelectedElem;
   const { parents: parentsOfSelected, children: allChildren } = selectedCardState;
-  const newStateForRender = inputState.map((column) => column.map((card) => ({ ...card })));
+  const newStateForRender = copiedStateForRender(inputState);
   const newCardId = cardState.id;
 
   const lastChild: IDataChains | undefined = _.last(allChildren);
@@ -23,7 +23,7 @@ const addCardToState = ({
   const cardIndexInDepth = whereToAdd === 'up' ? allNeighbors.indexOf(selectedId) : allNeighbors.indexOf(selectedId) + 1;
 
   if (selectedDepth !== 1) {
-    const closestParentId = parentsOfSelected[parentsOfSelected.length - 1].id;
+    const closestParentId = _.last(parentsOfSelected)!.id;
     const closestParent = _.find(newStateForRender.flat(), { id: closestParentId });
 
     const { children: chainChildren } = closestParent!;
