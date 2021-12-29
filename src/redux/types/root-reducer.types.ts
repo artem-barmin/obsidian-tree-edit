@@ -5,3 +5,5 @@ export const CHANGE_CARD = 'CHANGE_CARD';
 export const CHANGE_FIRST_RENDER = 'CHANGE_FIRST_RENDER';
 export const DELETE_CARD = 'DELETE_CARD';
 export const ADD_CARD = 'ADD_CARD';
+export const ADD_CARD_VERTICALLY = 'ADD_CARD_VERTICALLY';
+export const ADD_CARD_RIGHT = 'ADD_CARD_RIGHT';

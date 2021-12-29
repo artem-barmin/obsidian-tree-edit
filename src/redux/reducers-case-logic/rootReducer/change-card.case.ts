@@ -11,7 +11,8 @@ export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: Roo
       if (card.isSelected) {
         card.isEdit = isEdit;
 
-        if (newContent && (wasChanged = newContent !== card.markdownContent)) {
+        if (newContent && newContent !== card.markdownContent) {
+          wasChanged = true;
           card.markdownContent = newContent;
         }
       }

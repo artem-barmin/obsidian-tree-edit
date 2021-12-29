@@ -1,5 +1,6 @@
 import {
-  AddCard,
+  AddCardRight,
+  AddCardVertically,
   ChangeCard,
   ChangeFirstRender,
   ClickCardView,
@@ -10,9 +11,6 @@ import {
 import { IDataSelectedElem } from '../interfaces';
 import { readyState } from '../scripts';
 import { RootTypes } from '../types/';
-import { CREATE_EMPTY_CARD } from '../types/root-reducer.types';
-
-const { ADD_CARD, CHANGE_CARD, CHANGE_FIRST_RENDER, CLICK_CARD_VIEW, CREATE_MAIN_STATES, DELETE_CARD } = RootTypes;
 
 type Dispatch<T, R = void> = (action: T) => R;
 
@@ -20,33 +18,41 @@ export const createMainStates = (markdown: string) => {
   return async (dispatch: Dispatch<CreateMainStates>) => {
     const { stateMDContent, preactState } = await readyState(markdown);
 
-    dispatch({ type: CREATE_MAIN_STATES, payload: { stateMDContent, preactState } });
+    dispatch({
+      type: RootTypes.CREATE_MAIN_STATES,
+      payload: { stateMDContent, preactState },
+    });
   };
 };
 
 export const createEmptyCard = (removeContent: boolean): CreateEmptyCard => ({
-  type: CREATE_EMPTY_CARD,
+  type: RootTypes.CREATE_EMPTY_CARD,
   payload: removeContent,
 });
 
 export const changeFirstRender = (filename: string): ChangeFirstRender => ({
-  type: CHANGE_FIRST_RENDER,
+  type: RootTypes.CHANGE_FIRST_RENDER,
   payload: filename,
 });
 
 export const clickCardView = (data: IDataSelectedElem): ClickCardView => ({
-  type: CLICK_CARD_VIEW,
+  type: RootTypes.CLICK_CARD_VIEW,
   payload: { ...data },
 });
 
-export const addCard = (whereToAdd: string, markdownContent: string): AddCard => ({
-  type: ADD_CARD,
+export const addCardRight = (whereToAdd: string, markdownContent: string): AddCardRight => ({
+  type: RootTypes.ADD_CARD,
+  payload: { whereToAdd, markdownContent },
+});
+
+export const addCardVertically = (whereToAdd: string, markdownContent: string): AddCardVertically => ({
+  type: RootTypes.ADD_CARD_VERTICALLY,
   payload: { whereToAdd, markdownContent },
 });
 
 export const changeCard = (isEdit: boolean, newContent: string): ChangeCard => ({
-  type: CHANGE_CARD,
+  type: RootTypes.CHANGE_CARD,
   payload: { isEdit, newContent },
 });
 
-export const deleteCard = (): DeleteCard => ({ type: DELETE_CARD });
+export const deleteCard = (): DeleteCard => ({ type: RootTypes.DELETE_CARD });

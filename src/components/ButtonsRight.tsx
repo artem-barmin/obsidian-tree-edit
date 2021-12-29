@@ -11,8 +11,8 @@ export const ButtonsRight: FunctionComponent<IButtonsRight_Props> = ({ isEdit, d
   const isEmptyCard = useEmptyCard();
   const isLastCard = useLastCard();
 
-  const statusTitle = isEdit ? 'Сохранить изменения' : 'Редактировать карточку';
-  const deleteTitile = isLastCard ? 'Удалить содержимое маркдауна' : 'Удалить карточку';
+  const statusTitle = isEdit ? 'Save changes' : 'Edit card';
+  const deleteTitile = isLastCard ? 'Delete markdown content' : 'Delete card';
   const classesEdit = ['card-btn', isEdit ? 'save' : 'edit'];
 
   const onClickDelete = (lastCard: boolean) => {
@@ -36,7 +36,7 @@ export const ButtonsRight: FunctionComponent<IButtonsRight_Props> = ({ isEdit, d
           {depth < 6 && (
             <span
               className="card-btn add-card"
-              title="Добавить дочку"
+              title="Add child"
               onClick={() => addNewCard('right')}
               style={isEmptyCard ? { marginTop: 'auto', alignSelf: 'center' } : {}}
             >

@@ -48,7 +48,16 @@ export interface INearestNeighbor {
   parentId?: id;
 }
 
-export interface ICreateCardData {
+export interface ICreateNewCardStates_Input {
+  stateForRender: IPreactState[][];
+  stateMDContent: IStateMDContent[];
+  newCardId: id;
+  whereToAdd: string;
+  cardFromWhichAdd: string;
+  markdownContent: string;
+}
+
+export interface ICreateCardData_Input {
   id: id;
   depth: number;
   markdownContent: string;
@@ -58,7 +67,7 @@ export interface ICreateCardData {
   isEdit?: boolean;
 }
 
-export interface IAddNewCardToParents_Input {
+export interface IAddCardToParents_Input {
   inputState: IPreactState[][];
   allParents: IDataChains[];
   newCardId: id;
@@ -66,7 +75,7 @@ export interface IAddNewCardToParents_Input {
   lastNeighborId?: id;
 }
 
-export interface IAddNewCardToNeighbors_Input {
+export interface IAddCardToNeighbors_Input {
   inputState: IPreactState[];
   selectedId: id;
   newCardId: id;
@@ -75,7 +84,23 @@ export interface IAddNewCardToNeighbors_Input {
   chainNeighbors?: IDataChains[];
 }
 
+export interface IAddToStateVertically_Input extends IAddCardTo {
+  selectedCardState: IPreactState;
+  whereToAdd: string;
+}
+
+export interface IAddToStateRight extends IAddCardTo {
+  allChildren: IDataChains[];
+  allParents: IDataChains[];
+}
+
 export interface IDataChains {
   id: id;
   depth: number;
+}
+
+interface IAddCardTo {
+  inputState: IPreactState[][];
+  cardState: IPreactState;
+  lastSelectedElem: IDataChains;
 }
