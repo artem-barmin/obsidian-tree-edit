@@ -11,7 +11,7 @@ export type ChangeFirstRender = IAction<typeof RootTypes.CHANGE_FIRST_RENDER, st
 
 export type ClickCardView = IAction<typeof RootTypes.CLICK_CARD_VIEW, IDataSelectedElem>;
 
-export type AddCardRight = IAction<typeof RootTypes.ADD_CARD, RootInterfaces.IAddCard>;
+export type AddCardRight = IAction<typeof RootTypes.ADD_CARD_RIGHT, RootInterfaces.IAddCard>;
 
 export type AddCardVertically = IAction<typeof RootTypes.ADD_CARD_VERTICALLY, RootInterfaces.IAddCard>;
 

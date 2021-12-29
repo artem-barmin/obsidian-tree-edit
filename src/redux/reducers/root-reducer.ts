@@ -28,7 +28,7 @@ export const rootReducer = (state = initialState, action: RootAction) => {
     case RootTypes.CLICK_CARD_VIEW:
       return clickCardView(state, action.payload!);
 
-    case RootTypes.ADD_CARD:
+    case RootTypes.ADD_CARD_RIGHT:
       return addCardRight(state, action.payload!);
 
     case RootTypes.ADD_CARD_VERTICALLY:
