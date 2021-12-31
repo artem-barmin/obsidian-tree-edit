@@ -20,8 +20,7 @@ const initialState = async (markdownText: string) => {
 
     if (elem.type === 'heading') {
       const headerData: IHeadersData = {
-        // id: nanoid(),
-        id: elem.children[0].value,
+        id: nanoid(),
         depth: elem.depth,
         markdownContent: `${remark().stringify(elem)}\n`,
       };
