@@ -1,12 +1,11 @@
+import { configureStore } from '@reduxjs/toolkit';
 import { render } from 'preact';
 import { Provider } from 'react-redux';
-import { applyMiddleware, createStore } from 'redux';
-import thunk from 'redux-thunk';
 import { App } from './components/App';
 import { rootReducer } from './redux/reducers';
 import TreeEditView from './treeEdit-view';
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = configureStore({ reducer: rootReducer });
 
 export const preactRender = (plugin: TreeEditView) => {
   render(

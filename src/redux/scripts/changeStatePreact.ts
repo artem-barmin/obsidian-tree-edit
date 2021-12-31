@@ -10,24 +10,9 @@ export const makeChainOnClick = (
 
   if (lastSelectedElem?.id === selectedId) return null;
 
-  const scrollingChildren = (scrollArr: IDataChains[], clickParents: IDataChains[], clickScrolls: IDataChains[]) => {
-    const chainPositions = (inputArr: IDataChains[], toArr: IDataChains[], scrollEl: IDataChains): void => {
-      inputArr.forEach((elem) => {
-        if (scrollEl.depth === elem.depth) {
-          toArr[toArr.indexOf(scrollEl)] = elem;
-        }
-      });
-    };
-    scrollArr.forEach((scroll) => {
-      if (scroll.depth === selectedDepth) {
-        scrollArr[scrollArr.indexOf(scroll)] = { id: selectedId, depth: selectedDepth };
-      }
-      chainPositions(clickParents, scrollArr, scroll);
-      chainPositions(clickScrolls, scrollArr, scroll);
-    });
-  };
+  const parentsSelectedElem: IDataChains[] = [];
 
-  const newStatePreact: IPreactState[][] = inputState.map((column) => {
+  const stateWithFlags: IPreactState[][] = inputState.map((column) => {
     return column.map((card) => {
       const newCard = Object.assign({}, card);
 
@@ -49,14 +34,37 @@ export const makeChainOnClick = (
 
       if (child) newCard.isChild = true;
       if (scrollChild) newCard.scrollElement = true;
+      if (neighbors.includes(card.id)) newCard.isNeighbor = true;
+
       if (parent) {
         newCard.isParent = true;
         newCard.scrollElement = true;
-        scrollingChildren(newCard.scrollChildren, parents, scrollChildren);
+
+        parentsSelectedElem.push({ id: card.id, depth: card.depth });
       }
-      if (neighbors.includes(card.id)) newCard.isNeighbor = true;
 
       return newCard;
+    });
+  });
+
+  const newStatePreact = stateWithFlags.map((column) => {
+    return column.map((card) => {
+      if (_.find(parents, { id: card.id })) {
+        return {
+          ...card,
+          scrollChildren: card.scrollChildren.map((scroll) => {
+            for (const parent of parentsSelectedElem) {
+              if (scroll.depth === parent.depth) {
+                return { ...scroll, id: parent.id };
+              }
+            }
+
+            return scroll.depth === selectedDepth ? { ...scroll, id: selectedId } : scroll;
+          }),
+        };
+      }
+
+      return card;
     });
   });
 

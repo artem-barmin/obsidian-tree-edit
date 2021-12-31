@@ -22,5 +22,9 @@ export default {
     banner,
   },
   external: ['obsidian'],
+  onwarn(warning, warn) {
+    if (warning.code === 'THIS_IS_UNDEFINED') return;
+    warn(warning);
+  },
   plugins: [typescript(), nodeResolve({ browser: true }), commonjs()],
 };

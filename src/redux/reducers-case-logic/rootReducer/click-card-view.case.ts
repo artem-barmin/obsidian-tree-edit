@@ -8,5 +8,5 @@ export const clickCardView = (state: IStateRootReducer, payload: IDataSelectedEl
 
   const { newStatePreact, lastSelectedElem } = result;
 
-  return { ...state, lastSelectedElem: { ...lastSelectedElem }, stateForRender: [...newStatePreact] };
+  return { ...state, lastSelectedElem: { ...lastSelectedElem }, stateForRender: newStatePreact };
 };
