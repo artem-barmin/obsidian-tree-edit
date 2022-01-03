@@ -12,7 +12,7 @@ export const ColumnDepth: FunctionComponent<IColumnDepth_Props> = ({ cards }) =>
     if ($divColumn.current && isSelectedCard) {
       $divColumn.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [$divColumn, isSelectedCard]);
+  }, [isSelectedCard]);
 
   return (
     <div className="column" ref={$divColumn}>

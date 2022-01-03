@@ -115,14 +115,15 @@ export const readyState = async (markdownText: string) => {
 
     const stateChain = (globalInput: IHeaderChains[], globalState: IPreactState[][] = inputState): void => {
       for (const chainEl of globalInput) {
-        for (const state of globalState.flat()) {
-          if (chainEl.id === state.id) {
-            state.parents.push(...chainEl.parents);
-            state.neighbors.push(...chainEl.neighbors);
-            addChildren(chainEl.children, state.children);
-            scrollingChildren(state.children, state.scrollChildren);
-          }
+        const cardState = _.find(globalState.flat(), { id: chainEl.id });
+
+        if (cardState) {
+          cardState.parents.push(...chainEl.parents);
+          cardState.neighbors.push(...chainEl.neighbors);
+          addChildren(chainEl.children, cardState.children);
+          scrollingChildren(cardState.children, cardState.scrollChildren);
         }
+
         stateChain(chainEl.children);
       }
     };
