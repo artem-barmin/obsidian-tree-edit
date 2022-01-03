@@ -7,7 +7,7 @@ import {
   IStateRootReducer,
   RootInterfaces,
 } from '../../interfaces';
-import { addCardToNeighbors, copiedStateForRender, createCardData, createNewCardStates } from '../../scripts';
+import { addCardToNeighbors, copiedCardState, copiedStateForRender, createCardData, createNewCardStates } from '../../scripts';
 
 const addCardToParents = ({ inputState, allParents, newCardId, selectedDepth, lastNeighborId }: IAddCardToParents_Input) => {
   for (const { id, children, scrollChildren } of inputState.flat()) {
@@ -26,7 +26,10 @@ const addCardToParents = ({ inputState, allParents, newCardId, selectedDepth, la
 
 const addCardToState = ({ inputState, lastSelectedElem, allChildren, cardState, allParents }: IAddToStateRight_Input) => {
   const { id: selectedId, depth: selectedDepth } = lastSelectedElem;
+
   const newStateForRender = copiedStateForRender(inputState);
+  const newCardState = copiedCardState(cardState);
+
   const newCardId = cardState.id;
 
   let cardFromWhichAdd = '';
@@ -51,9 +54,9 @@ const addCardToState = ({ inputState, lastSelectedElem, allChildren, cardState, 
         }
       }
 
-      allNeighbors.splice(lastNeighborIndex, 0, { ...cardState });
+      allNeighbors.splice(lastNeighborIndex, 0, { ...newCardState });
     } else {
-      newStateForRender.push([{ ...cardState }]);
+      newStateForRender.push([{ ...newCardState }]);
     }
 
     cardFromWhichAdd = selectedId;
@@ -64,15 +67,14 @@ const addCardToState = ({ inputState, lastSelectedElem, allChildren, cardState, 
     const allNeighbors = _.map(allNeighborsState, 'id');
 
     const closestParent = _.find(newStateForRender.flat(), { id: selectedId });
-    const { children: chainChildren } = closestParent!;
-    const chainNeighbors = _.filter(chainChildren, { depth: selectedDepth + 1 });
+    const chainNeighbors = _.filter(closestParent!.children, { depth: selectedDepth + 1 });
 
     const lastNeighborId = _.last(chainNeighbors)!.id;
     const cardIndexInDepth = allNeighbors.indexOf(lastNeighborId) + 1;
 
     cardFromWhichAdd = lastNeighborId;
-    cardState.neighbors.push(..._.map(chainNeighbors, 'id'));
-    allNeighborsState.splice(cardIndexInDepth, 0, { ...cardState });
+    newCardState.neighbors.push(..._.map(chainNeighbors, 'id'));
+    allNeighborsState.splice(cardIndexInDepth, 0, { ...newCardState });
 
     addCardToNeighbors({
       inputState: allNeighborsState,
@@ -133,9 +135,9 @@ export const addCardRight = (state: IStateRootReducer, { whereToAdd, markdownCon
 
     return {
       ...state,
-      lastSelectedElem: { ...lastElem },
-      stateForRender: [...newStatePreact],
-      stateMDContent: [...newStateMDContent],
+      lastSelectedElem: lastElem,
+      stateForRender: newStatePreact,
+      stateMDContent: newStateMDContent,
       stateOfNavigation: newMD,
       changedFromInterface: true,
     };

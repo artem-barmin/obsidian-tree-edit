@@ -6,7 +6,7 @@ export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: Roo
 
   let wasChanged = false;
 
-  const newStatePreact = stateForRender.map((column) =>
+  const newStateForRender = stateForRender.map((column) =>
     column.map((card) => {
       if (card.isSelected) {
         const contentChanged = newContent && newContent !== card.markdownContent;
@@ -33,16 +33,16 @@ export const changeCard = (state: IStateRootReducer, { isEdit, newContent }: Roo
 
     return {
       ...state,
-      stateForRender: [...newStatePreact],
-      stateMDContent: [...newStateMDContent],
+      stateForRender: newStateForRender,
+      stateMDContent: newStateMDContent,
       stateOfNavigation: newMD,
       changedFromInterface: !isEdit,
     };
   } else if (!stateOfNavigation && !isEdit) {
     const newMD = stateMDContent[0].markdownContent;
 
-    return { ...state, stateForRender: [...newStatePreact], stateOfNavigation: newMD, changedFromInterface: true };
+    return { ...state, stateForRender: newStateForRender, stateOfNavigation: newMD, changedFromInterface: true };
   } else {
-    return { ...state, stateForRender: [...newStatePreact] };
+    return { ...state, stateForRender: newStateForRender };
   }
 };

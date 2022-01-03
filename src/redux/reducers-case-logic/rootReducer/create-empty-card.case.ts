@@ -10,9 +10,9 @@ export const createEmptyCard = (state: IStateRootReducer, removeContent: boolean
 
   return {
     ...state,
-    stateForRender: Array.from([[{ ...cardState }]]),
-    stateMDContent: Array.from([{ ...cardData }]),
-    lastSelectedElem: { ...{ id: headerId, depth: 1 } },
+    stateForRender: [[cardState]],
+    stateMDContent: [cardData],
+    lastSelectedElem: { id: headerId, depth: 1 },
     stateOfNavigation: '',
     changedFromInterface: removeContent,
   };

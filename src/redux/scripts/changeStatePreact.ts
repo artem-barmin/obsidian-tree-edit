@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { IDataChains, IDataSelectedElem, IPreactState } from '../interfaces';
+import { copiedCardState } from './deepCopyStates';
 
 export const makeChainOnClick = (
   inputState: IPreactState[][],
@@ -14,7 +15,7 @@ export const makeChainOnClick = (
 
   const stateWithFlags: IPreactState[][] = inputState.map((column) => {
     return column.map((card) => {
-      const newCard = Object.assign({}, card);
+      const newCard = copiedCardState(card);
 
       if (selectedId === card.id) {
         newCard.isSelected = true;

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { nanoid } from 'nanoid';
 import { IAddToStateVertically_Input, id, IDataChains, IPreactState, IStateRootReducer, RootInterfaces } from '../../interfaces';
-import { addCardToNeighbors, copiedStateForRender, createCardData, createNewCardStates } from '../../scripts';
+import { addCardToNeighbors, copiedCardState, copiedStateForRender, createCardData, createNewCardStates } from '../../scripts';
 
 const addCardToState = ({
   inputState,
@@ -12,7 +12,10 @@ const addCardToState = ({
 }: IAddToStateVertically_Input) => {
   const { id: selectedId, depth: selectedDepth } = lastSelectedElem;
   const { parents: parentsOfSelected, children: allChildren } = selectedCardState;
+
   const newStateForRender = copiedStateForRender(inputState);
+  const newCardState = copiedCardState(cardState);
+
   const newCardId = cardState.id;
 
   const lastChild: IDataChains | undefined = _.last(allChildren);
@@ -29,7 +32,7 @@ const addCardToState = ({
     const { children: chainChildren } = closestParent!;
     const chainNeighbors = _.filter(chainChildren, { depth: selectedDepth });
 
-    cardState.neighbors.push(..._.map(chainNeighbors, 'id'));
+    newCardState.neighbors.push(..._.map(chainNeighbors, 'id'));
 
     addCardToNeighbors({ inputState: allNeighborsState, selectedId, newCardId, cardIndexInDepth, allNeighbors });
 
@@ -39,12 +42,12 @@ const addCardToState = ({
       }
     }
   } else {
-    cardState.neighbors.push(...allNeighbors);
+    newCardState.neighbors.push(...allNeighbors);
 
     addCardToNeighbors({ inputState: allNeighborsState, selectedId, newCardId, cardIndexInDepth, allNeighbors });
   }
 
-  allNeighborsState.splice(cardIndexInDepth, 0, { ...cardState });
+  allNeighborsState.splice(cardIndexInDepth, 0, { ...newCardState });
 
   return {
     newStateForRender,
@@ -91,9 +94,9 @@ export const addCardVertically = (state: IStateRootReducer, { whereToAdd, markdo
 
     return {
       ...state,
-      lastSelectedElem: { ...lastElem },
-      stateForRender: [...newStatePreact],
-      stateMDContent: [...newStateMDContent],
+      lastSelectedElem: lastElem,
+      stateForRender: newStatePreact,
+      stateMDContent: newStateMDContent,
       stateOfNavigation: newMD,
       changedFromInterface: true,
     };

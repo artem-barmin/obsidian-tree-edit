@@ -43,8 +43,10 @@ export interface IHeadersData extends IDataChains {
   markdownContent: string;
 }
 
-export interface INearestNeighbor {
+export interface INearestNeighbor_Input {
   inputState: IPreactState[];
+  lastSelectedElem: IDataChains;
+  allNeighborsId: idChains;
   parentId?: id;
 }
 

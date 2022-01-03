@@ -1,38 +1,34 @@
 import _ from 'lodash';
-import { id, IDataChains, IDataSelectedElem, INearestNeighbor, IPreactState, IStateRootReducer } from '../../interfaces';
+import { id, IDataChains, IDataSelectedElem, INearestNeighbor_Input, IPreactState, IStateRootReducer } from '../../interfaces';
 import { getReadyMarkdown, makeChainOnClick } from '../../scripts';
+
+const nearestNeighbor = ({ inputState, lastSelectedElem, allNeighborsId, parentId }: INearestNeighbor_Input) => {
+  const neigborsId: id[] = [];
+
+  if (parentId) {
+    const { children } = _.find(inputState, { id: parentId }) as IPreactState;
+    const neighbors = _.filter(children, { depth: lastSelectedElem.depth });
+
+    neighbors.length > 1 ? neigborsId.push(..._.map(neighbors, 'id')) : neigborsId.push(...allNeighborsId);
+  } else {
+    neigborsId.push(..._.map(inputState, 'id'));
+  }
+
+  const index = neigborsId.indexOf(lastSelectedElem.id);
+  return neigborsId[index - 1] ?? neigborsId[index + 1];
+};
 
 export const deleteCard = (state: IStateRootReducer) => {
   const { stateForRender, stateMDContent, lastSelectedElem } = state;
   const { id: selectedId, depth: selectedDepth } = lastSelectedElem;
 
   const allNeighborsState = stateForRender[selectedDepth - 1];
-  const allNeighbors = _.map(allNeighborsState, 'id');
+  const allNeighborsId = _.map(allNeighborsState, 'id');
   const deleteChildren: IDataChains[] = [];
 
   let dataForCardView: IDataSelectedElem;
   let closestNeighbor: id = '';
   let closestParent: id = '';
-
-  const nearestNeighbor = (
-    { inputState, parentId }: INearestNeighbor,
-    selectedElem = lastSelectedElem,
-    allNeighborsId = allNeighbors
-  ) => {
-    const neigborsId: id[] = [];
-
-    if (parentId) {
-      const { children } = _.find(inputState, { id: parentId }) as IPreactState;
-      const neighbors = _.filter(children, { depth: selectedElem.depth });
-
-      neighbors.length > 1 ? neigborsId.push(..._.map(neighbors, 'id')) : neigborsId.push(...allNeighborsId);
-    } else {
-      neigborsId.push(..._.map(inputState, 'id'));
-    }
-
-    const index = neigborsId.indexOf(selectedElem.id);
-    return neigborsId[index - 1] ?? neigborsId[index + 1];
-  };
 
   for (const { id, children, parents } of allNeighborsState) {
     if (id === selectedId) {
@@ -40,10 +36,10 @@ export const deleteCard = (state: IStateRootReducer) => {
         const parentId = parents[parents.length - 1].id;
 
         allNeighborsState.length > 1
-          ? (closestNeighbor = nearestNeighbor({ inputState: stateForRender.flat(), parentId }))
+          ? (closestNeighbor = nearestNeighbor({ inputState: stateForRender.flat(), lastSelectedElem, allNeighborsId, parentId }))
           : (closestParent = parentId);
       } else {
-        closestNeighbor = nearestNeighbor({ inputState: stateForRender[0] });
+        closestNeighbor = nearestNeighbor({ inputState: stateForRender[0], lastSelectedElem, allNeighborsId });
       }
 
       deleteChildren.push(...children);
@@ -87,9 +83,9 @@ export const deleteCard = (state: IStateRootReducer) => {
 
     return {
       ...state,
-      lastSelectedElem: { ...lastElem },
-      stateForRender: [...newStatePreact],
-      stateMDContent: [...newStateMDContent],
+      lastSelectedElem: lastElem,
+      stateForRender: newStatePreact,
+      stateMDContent: newStateMDContent,
       stateOfNavigation: newMD,
       changedFromInterface: true,
     };
