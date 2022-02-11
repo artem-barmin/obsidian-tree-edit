@@ -1,4 +1,179 @@
-/* Sets all the text color to red! */
-body {
-    color: red;
+.pane-empty,
+.tree-edit,
+.section-columns {
+  width: 100%;
+  height: 100%;
+}
+
+.tree-edit pre {
+  background: rgb(119, 119, 119);
+  color: #483699;
+  border-radius: 4px;
+  padding: 1em;
+  margin: 0.5em 0;
+  border-radius: 0.3em;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.tree-edit ol,
+.tree-edit ul {
+  padding-inline-start: 18px;
+}
+
+.chain-down pre {
+  background: rgba(94, 94, 94, 0.932);
+}
+
+.tree-edit h1,
+.tree-edit h2,
+.tree-edit h3,
+.tree-edit h4,
+.tree-edit h5,
+.tree-edit h6 {
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
+  font-size: 18px;
+}
+
+.section-columns {
+  display: flex;
+  padding: 10px 20px;
+  font-weight: 600;
+  overflow-x: auto;
+}
+
+.column {
+  scroll-snap-type: y mandatory;
+  scroll-snap-align: center;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  min-width: 340px;
+  width: 45%;
+}
+.column::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+.group {
+  position: relative;
+}
+
+.empty-place {
+  min-height: 20px;
+  height: 50%;
+}
+
+.card {
+  margin: 0;
+  padding: 0;
+  background: rgb(73, 73, 73);
+  position: relative;
+  min-height: 74px;
+}
+
+.view {
+  word-wrap: break-word;
+  padding: 10px 30px 10px 13px;
+}
+
+.react-codemirror {
+  margin: 0;
+  padding: 0;
+}
+
+.selected-item {
+  background: rgb(165, 165, 165);
+  color: #483699;
+}
+
+.chain-down {
+  background: rgba(165, 165, 165, 0.63);
+  color: #483699;
+}
+.chain-up {
+  background: rgba(128, 128, 128, 0.329);
+  color: #675b9c;
+}
+
+.flex-row .card-btn {
+  width: 20px;
+  height: 20px;
+  padding: 3px 8px;
+}
+
+.card-btn {
+  cursor: pointer;
+  z-index: 100;
+}
+
+.block-edit {
+  text-align: start;
+  padding: 0 10px;
+}
+
+.flex-row {
+  position: absolute;
+  height: 20px;
+  width: 100%;
+}
+
+.block-buttons-bottom,
+.block-buttons-top {
+  text-align: center;
+}
+
+.block-buttons-bottom {
+  bottom: 0%;
+}
+
+.block-buttons-right {
+  position: absolute;
+  height: 100%;
+  width: 30px;
+  right: 0%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.block-buttons-right .card-btn {
+  width: 100%;
+  text-align: center;
+}
+
+.add-card {
+  font-size: 17px;
+}
+
+.save {
+  color: rgb(34, 158, 34);
+}
+
+.add-card:hover {
+  background: rgb(116, 116, 116);
+  border-radius: 7px;
+}
+
+.chain-up:hover {
+  color: #483699c0;
+}
+
+.no-active:hover,
+.chain-up:hover {
+  background: rgba(146, 146, 146, 0.5);
+}
+
+.edit:hover,
+.save:hover {
+  font-weight: 800;
+}
+
+.delete:hover {
+  color: rgb(255, 57, 57);
+}
+
+.edit:hover {
+  color: rgb(255, 113, 57);
 }
