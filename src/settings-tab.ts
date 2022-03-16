@@ -15,7 +15,7 @@ export class SampleSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Preview Split')
-      .setDesc('Split direction for the Mind Map Preview')
+      .setDesc('Split direction for the Tree Edit Preview')
       .addDropdown((dropDown) =>
         dropDown
           .addOption('horizontal', 'Horizontal')
