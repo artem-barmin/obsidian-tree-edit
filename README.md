@@ -2,6 +2,9 @@
 
 The plugin allows you to read the incoming markdown file by headers and their contents and display the entire header hierarchy in a tree structure from left to right. You can create, edit and delete headings.
 
+# Project/Issues
+
+Roadmap: https://github.com/users/artem-barmin/projects/1
 
 # Demo
 
