@@ -1,10 +1,10 @@
 {
   "id": "obsidian-tree-edit",
   "name": "Tree edit",
-  "version": "1.0.1",
+  "version": "0.0.1",
   "minAppVersion": "0.9.12",
-  "description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-  "author": "Obsidian",
-  "authorUrl": "https://obsidian.md/about",
+  "description": "View your note as a tree, divided by its headings. Inspired heavily by Gingko Writer.",
+  "author": "Artem",
+  "authorUrl": "https://github.com/artem-barmin",
   "isDesktopOnly": false
 }
